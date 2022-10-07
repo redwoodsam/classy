@@ -1,0 +1,24 @@
+<main class="lista-anuncios-wrapper container p-3" th:fragment="lista-anuncios(anuncios)">
+	<ul class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
+		<li class="m-0 p-0">
+			<div class="row anuncio container p-3 m-0">
+				<a class="col-12 row anuncio-wrapper-link m-0" th:href="${'anuncios/' + anuncio.id}">
+					<div class="col-2">
+						<img class="img-fluid img-thumbnail" th:src="${anuncio.fotos[0].foto.path}" alt="${anuncio.nome}">
+					</div>
+					<div class="col-8 d-flex flex-column">
+							<span th:text="${anuncio.nome}"></span>
+							<span class="text-secondary" th:text="${anuncio.usuario.dadosPessoais.endereco.bairro + ' - ' + anuncio.usuario.dadosPessoais.endereco.cidade + ' - ' + anuncio.usuario.dadosPessoais.endereco.uf}"></span>
+							<div class="mt-auto">
+								<span class="text-secondary" th:text="${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')}"></span>
+							</div>
+					</div>
+					<div class="col-2 d-flex align-items-center justify-content-end">
+						<span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></span>
+					</div>
+				</a>
+			</div>
+		</li>
+	</ul>
+</main>
+

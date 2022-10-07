@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="~{ base :: head }" ></head>
+	<body>
+		<header th:replace="~{ base :: header }"></header>
+		<div class="container-lista-anuncios container d-flex my-2">
+			<main th:replace="~{ fragments/home/lista-anuncios :: lista-anuncios(${anuncios}) }"></main>
+		</div>
+		<footer th:replace="~{ base :: footer }"></footer>
+	</body>
+</html>

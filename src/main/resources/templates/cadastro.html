@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="~{ base::head }">
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<header th:replace="~{ base :: header }"/>
+		<div class="form-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
+			<h3>Cadastro</h3>
+			<form id="form-cadastro" th:action="@{/cadastro}" method="post">
+				
+				<div class="form-campo form-group">
+					<label for="login">Nome Completo:</label>
+					<input class="form-control" type="text" name="login" placeholder="Digite o seu nome completo">
+				</div>
+				
+				<div class="form-campo form-group">
+					<label for="login">E-mail:</label>
+					<input class="form-control" type="email" name="login" placeholder="Digite o seu e-mail">
+				</div>
+				
+				<div class="form-campo form-group">
+					<label for="password">Senha:</label>
+					<input class="form-control" type="password" name="password" placeholder="Digite a sua senha">
+				</div>
+				
+				<div class="form-campo form-group">
+					<label for="password">Confirmar Senha:</label>
+					<input class="form-control" type="password" name="password" placeholder="Digite a sua senha">
+				</div>
+				<div class="form-button-wrapper">
+					<button class="form-button-submit btn btn-success" type="submit">Cadastrar</button>
+				</div>
+			</form>
+			<p class="mt-3">Já possui uma conta? <a th:href="@{/login}" class="text-success">Entre aqui!</a></p>
+		</div>
+		<footer th:replace="~{ base :: footer }"/>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="~{ base :: head }" >
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<header th:replace="~{ base :: header }"></header>
+		<main class="anuncio-completo-wrapper container m-auto row my-2 p-3">
+			<div class="row anuncio-container mx-auto container col-12 d-flex p-3">
+				<div class="col-6 d-flex flex-column anuncio-img-wrapper h-100 align-items-center">
+					<div th:replace="~{fragments/anuncio/img-carousel :: img-carousel(${anuncio.fotos})}"></div>
+				</div>
+				<section class="col-4 container d-flex flex-column align-items-center py-2 px-0">
+					<div class="container d-flex flex-column align-items-center text-center w-100">
+						<div 
+							class="anuncio-detalhes-vendedor d-flex p-3 w-100 bg-success text-white align-items-center justify-content-center rounded border border-dark" 
+							th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"
+						/>
+						<div class="anuncio-detalhes-vendedor border border-dark rounded p-2 w-100">
+							<h4 class="h5">Anunciante:</h4>
+							<span class="anuncio-detalhes-vendedor-body w-100 d-block pt-1" th:text="${anuncio.usuario.dadosPessoais.nome + ' ' + anuncio.usuario.dadosPessoais.sobrenome}"></span>
+						</div>
+						<div class="anuncio-detalhes-vendedor border border-dark rounded p-2 w-100">
+							<h4 class="h4">Localização:</h4>
+							<ul class="anuncio-detalhes-vendedor-body list-group text-start p-2">
+								<li>
+									<span th:text="${'Bairro: ' + anuncio.usuario.dadosPessoais.endereco.bairro}"></span>
+								</li>
+									<span th:text="${'Cidade: ' + anuncio.usuario.dadosPessoais.endereco.cidade}"></span>
+								<li>
+									<span th:text="${'Estado: ' + anuncio.usuario.dadosPessoais.endereco.uf}"></span>
+								</li>
+							</ul>
+						</div>
+						<div class="anuncio-detalhes-vendedor border border-dark rounded p-2 w-100">
+							<h4 class="h4">Contato:</h4>
+							<ul class="anuncio-detalhes-vendedor-body list-group text-start p-2">
+								<li>
+									<span th:text="${'Telefone: ' + anuncio.usuario.dadosPessoais.telefone}"></span>
+								</li>
+								<li>
+									<span th:text="${'E-mail: ' + anuncio.usuario.dadosPessoais.email}"></span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="anuncio-detalhes-section mt-3 rounded align-items-center container p-0 col-12 w-100 mx-auto">
+					<div class="px-2 py-1">
+						<h3 class="h3 p-0 m-0">Descrição:</h3>
+						<div class="anuncio-descricao mx-0 my-2 p-0 text-left" th:text="${anuncio.descricao}" />
+					</div>
+				</section>
+			</div>
+		</main>
+		<footer th:replace="~{ base :: footer }"></footer>
+		<script type="text/javascript" th:src="@{/js/carousel.js}" ></script>
+	</body>
+</html>

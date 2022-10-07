@@ -1,0 +1,199 @@
+/* Configurações globais */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	width: 100%;
+	height: 100vh;
+}
+
+body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: 100% !important;
+}
+
+:root {
+	--light-green: #73E2A7;
+	--dark-green: #1C7C54;
+	--darker-green: #1B512D;
+}
+
+ul, li {
+	position:relative;
+	padding: 0;
+	margin: 0;
+	text-decoration:none;
+	list-style-type: none;
+}
+
+#logo, #logo a {
+	font-family: "Dancing Script", sans-serif;
+	font-size: 2rem;
+	text-decoration: none;
+	color: var(--dark-green);
+}
+
+.header {
+	width: 100%;
+}
+
+.nav-text {
+	color: #fff !important;
+}
+
+main {
+	min-height: 100%;
+}
+
+
+.footer {
+	background-color: var(--dark-green)
+}
+
+
+/* Página de Anúncio */
+
+.container-lista-anuncios {
+	min-height: 100vh;
+}
+
+.lista-anuncios-wrapper {
+	background-color: var(--dark-green);
+	border: 1px solid black;
+	border-radius: 10px;
+}
+
+.anuncio-completo-wrapper {
+	min-height: 100%;
+	display: flex;
+	border: 1px solid var(--dark-green);
+}
+
+
+/* Página de Anúncio */
+
+.anuncio-container {
+	height: 100%;
+	display: flex;
+}
+
+.anuncio {
+	background-color: #fff;
+	border: 1px solid #000;
+	border-radius: 10px;
+	box-shadow: 1px 1px #1111;
+	user-select: none;
+	cursor: pointer;
+}
+
+.anuncio-detalhes {
+	border: 1px solid #000;
+}
+.anuncio-wrapper-link {
+	display: flex;
+	text-decoration: none;
+	width: 100%;
+	color: #000;
+}
+
+.anuncio-wrapper-link:hover {
+	color: var(--dark-green);
+}
+
+.anuncio-img-wrapper {
+	height: 100% !important;
+}
+
+.carousel-wrapper {
+	position: relative;
+	height: 100%;
+	max-width: 100%;
+}
+
+.carousel-active-image-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	max-width: 100%;
+	height: 30rem;
+}
+
+.carousel-active-image {
+	display: block;
+	max-width: 100%;
+}
+
+.carousel-slide-controllers {
+	position: absolute;
+	display:flex;
+	width: 100%;
+	justify-content: space-between;
+}
+
+.carousel-slide-controller {
+	padding: 1rem 1.5rem;
+	background-color: rgba(50,50,50,.5);
+	color: white;
+	cursor: pointer;
+	user-select: none;
+	font-size: 1.5rem;
+	font-weight: 300;
+}
+
+.carousel-slide-controller {
+	display: flex;
+}
+
+
+.carousel-thumbnails-wrapper {
+	align-items: center;
+	overflow-x: scroll;
+}
+
+.carousel-thumbnails-wrapper img {
+	height: 6rem;
+	border: 1px solid #e5e5e5;
+	cursor: pointer;
+}
+
+.anuncio-descricao {
+	min-height: 5rem;
+}
+
+.anuncio-detalhes-vendedor {
+	margin: 0.3rem 0;
+}
+
+.anuncio-detalhes-vendedor-body {
+	border-top: 1px solid #e5e5e5;
+}
+
+
+/* Página de Login */
+.form-wrapper {
+	display: flex;
+	margin: auto;
+	width: max-content;
+} 
+
+.form-campo {
+	margin: 1rem 0;
+}
+
+.form-button-wrapper {
+	display: flex;
+	width: 100%;
+}
+
+.form-button-wrapper button { 
+	margin: auto;
+}
