@@ -1,10 +1,21 @@
 package com.samuelaraujo.classy.model.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class CadastroDto {
 
+	@NotBlank(message = "O campo nome completo não pode ser vazio")
 	private String nomeCompleto;
-	private String login;
+	
+	@Email
+	@NotBlank(message = "O campo e-mail não pode ser vazio")
+	private String email;
+	
+	@NotBlank(message = "O campo senha não pode ser vazio")
 	private String senha;
+	
+	@NotBlank(message = "O campo confirmar senha não pode ser vazio")
 	private String senha2;
 
 	public String getNomeCompleto() {
@@ -15,12 +26,12 @@ public class CadastroDto {
 		this.nomeCompleto = nomeCompleto;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getSenha() {

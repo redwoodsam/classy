@@ -7,26 +7,26 @@
 		<header th:replace="~{ base :: header }"/>
 		<div class="form-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
 			<h3>Cadastro</h3>
-			<form id="form-cadastro" th:action="@{/cadastro}" method="post">
+			<form id="form-cadastro" th:action="@{/cadastro/registro}" method="post">
 				
 				<div class="form-campo form-group">
 					<label for="login">Nome Completo:</label>
-					<input class="form-control" type="text" name="login" placeholder="Digite o seu nome completo">
+					<input class="form-control" type="text" name="nomeCompleto" placeholder="Digite o seu nome completo">
 				</div>
 				
 				<div class="form-campo form-group">
 					<label for="login">E-mail:</label>
-					<input class="form-control" type="email" name="login" placeholder="Digite o seu e-mail">
+					<input class="form-control" type="email" name="email" placeholder="Digite o seu e-mail">
 				</div>
 				
 				<div class="form-campo form-group">
 					<label for="password">Senha:</label>
-					<input class="form-control" type="password" name="password" placeholder="Digite a sua senha">
+					<input class="form-control" type="password" name="senha" placeholder="Digite a sua senha">
 				</div>
 				
 				<div class="form-campo form-group">
 					<label for="password">Confirmar Senha:</label>
-					<input class="form-control" type="password" name="password" placeholder="Digite a sua senha">
+					<input class="form-control" type="password" name="senha2" placeholder="Repita a sua senha">
 				</div>
 				<div class="form-button-wrapper">
 					<button class="form-button-submit btn btn-success" type="submit">Cadastrar</button>

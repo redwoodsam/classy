@@ -1,1 +1,0 @@
-const cadastroForm = document.getElementById("form-cadastro");
