@@ -1,8 +1,13 @@
 package com.samuelaraujo.classy.model.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 public class LoginDto {
 
+	@NotEmpty(message = "O campo e-mail não pode ser vazio.")
 	private String login;
+
+	@NotEmpty(message = "O campo senha não pode ser vazio.")
 	private String senha;
 
 	public String getLogin() {

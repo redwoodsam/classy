@@ -5,29 +5,35 @@
 	</head>
 	<body>
 		<header th:replace="~{ base :: header }"/>
-		<div class="form-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
+		<div class="form-cadastro-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
 			<h3>Cadastro</h3>
-			<form id="form-cadastro" th:action="@{/cadastro}" method="post">
+			<form id="form-cadastro" th:object="${cadastroDto}" th:action="@{/cadastro}" method="post">
 				
 				<div class="form-campo form-group">
 					<label for="login">Nome Completo:</label>
-					<input class="form-control" type="text" name="nomeCompleto" placeholder="Digite o seu nome completo">
+					<input class="form-control" type="text" th:errorclass="is-invalid" th:field="*{nomeCompleto}" placeholder="Digite o seu nome completo">
+					<div class="invalid-feedback" th:each="error : ${#fields.errors('nomeCompleto')}" th:text="${error}"></div>
 				</div>
 				
 				<div class="form-campo form-group">
-					<div th:if="${param.error}" style="color: red">O e-mail informado já existe.</div>
 					<label for="login">E-mail:</label>
-					<input class="form-control" type="email" name="email" placeholder="Digite o seu e-mail">
+					<input class="form-control" type="email" th:errorclass="is-invalid" th:field="*{email}" placeholder="Digite o seu e-mail">
+					<div class="invalid-feedback" th:each="error : ${#fields.errors('email')}" th:text="${error}"></div>
+					<div th:if:"${#fields.errors('global')}">
+						<div class="erro-global text-danger" th:each="error : ${#fields.errors('global')}" th:text="${error}"></div>
+					</div>
 				</div>
 				
 				<div class="form-campo form-group">
 					<label for="password">Senha:</label>
-					<input class="form-control" type="password" name="senha" placeholder="Digite a sua senha">
+					<input class="form-control" type="password" th:errorclass="is-invalid" th:field="*{senha}" minlength="8" placeholder="Digite a sua senha">
+					<div class="invalid-feedback" th:each="error : ${#fields.errors('senha')}" th:text="${error}"></div>
 				</div>
 				
 				<div class="form-campo form-group">
 					<label for="password">Confirmar Senha:</label>
-					<input class="form-control" type="password" name="senha2" placeholder="Repita a sua senha">
+					<input class="form-control" type="password" th:errorclass="is-invalid" th:field="*{senha2}" minlength="8" placeholder="Repita a sua senha">
+					<div class="invalid-feedback" th:each="error : ${#fields.errors('senha2')}" th:text="${error}"></div>
 				</div>
 				<div class="form-button-wrapper">
 					<button class="form-button-submit btn btn-success" type="submit">Cadastrar</button>

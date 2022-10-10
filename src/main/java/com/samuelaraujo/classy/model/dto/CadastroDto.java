@@ -1,21 +1,23 @@
 package com.samuelaraujo.classy.model.dto;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class CadastroDto {
 
-	@NotBlank(message = "O campo nome completo não pode ser vazio")
+	@NotBlank(message = "O campo nome completo não pode ser vazio.")
 	private String nomeCompleto;
 	
-	@Email
-	@NotBlank(message = "O campo e-mail não pode ser vazio")
+	@Email(message = "E-mail inválido")
+	@NotBlank(message = "O campo e-mail não pode ser vazio.")
 	private String email;
 	
-	@NotBlank(message = "O campo senha não pode ser vazio")
+	@NotBlank(message = "O campo senha não pode ser vazio.")
 	private String senha;
 	
-	@NotBlank(message = "O campo confirmar senha não pode ser vazio")
+	@NotBlank(message = "O campo confirmar senha não pode ser vazio.")
 	private String senha2;
 
 	public String getNomeCompleto() {

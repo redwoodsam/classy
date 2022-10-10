@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -35,6 +37,7 @@ public class UsuarioService implements UserDetailsService {
 		return usuarioRepository.findAll();
 	}
 
+	@Transactional
 	public Usuario cadastrar(CadastroDto cadastroDto) {
 
 		Optional<Usuario> usuarioSave = usuarioRepository.buscarPorEmail(cadastroDto.getEmail());

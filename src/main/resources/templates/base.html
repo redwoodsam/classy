@@ -20,8 +20,8 @@
 		</li>
 		<li class="nav-item d-flex">
 			<a class="btn btn-outline-success" sec:authorize="!isAuthenticated()" th:href="@{/login}">Anuncie já</a>
-			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/login}">Minha conta</a>	
-			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/login}">Meus Anúncios</a>
+			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/minha-conta}">Minha conta</a>	
+			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/meus-anuncios}">Meus Anúncios</a>
 			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
 		</li>
 	</ul>

@@ -1,4 +1,4 @@
-/* Configurações globais */
+/* Configura��es globais */
 
 * {
 	margin: 0;
@@ -58,7 +58,7 @@ main {
 }
 
 
-/* Página de Anúncio */
+/* P�gina de An�ncio */
 
 .container-lista-anuncios {
 	min-height: 100vh;
@@ -77,7 +77,7 @@ main {
 }
 
 
-/* Página de Anúncio */
+/* P�gina de An�ncio */
 
 .anuncio-container {
 	height: 100%;
@@ -196,4 +196,19 @@ main {
 
 .form-button-wrapper button { 
 	margin: auto;
+}
+
+/* P�gina de cadastro */
+.form-cadastro-wrapper {
+	width: 30%;
+	margin: auto;
+}
+
+.erro-global {
+	font-size: .875rem;
+	font-weight: light;
+}
+
+.meus-anuncios-table-thumbnail {
+	max-height: 50px;
 }
