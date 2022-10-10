@@ -6,14 +6,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.samuelaraujo.classy.exception.DadoInvalidoException;
+import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.CadastroDto;
 import com.samuelaraujo.classy.service.UsuarioService;
 
 @Controller
-@RequestMapping(value = "/cadastro")
+@RequestMapping("/cadastro")
 public class CadastroController {
 
 	@Autowired
@@ -24,12 +25,15 @@ public class CadastroController {
 		return "cadastro";
 	}
 	
-	@PostMapping(value = "/registro", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String cadastrar(@RequestBody CadastroDto cadastroDto) {
-		usuarioService.cadastrar(cadastroDto);
-		System.out.println(cadastroDto.getNomeCompleto());
-		
-		return "forward:home";
+	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String cadastrar(CadastroDto cadastroDto, Model model) {
+		try {
+			Usuario usuarioCadastrado = usuarioService.cadastrar(cadastroDto);
+			return "forward:/";
+		} catch (DadoInvalidoException e) {
+			model.addAttribute("erro", e.getMessage());
+			return "forward:cadastro";
+		}
 	}
 	
 }
