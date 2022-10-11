@@ -1,7 +1,7 @@
 <head th:replace="~{ base::head }"></head>
 <body>
     <header th:replace="~{ base::header }"></header>
-    <main class="meus-anuncios-wrapper border border-success rounded container p-3 my-2 text-center" th:fragment="lista-anuncios(anuncios)">
+    <main class="meus-anuncios-wrapper border border-success rounded container p-3 my-2 text-center mb-0" th:fragment="lista-anuncios(anuncios)">
         <h3 class="h3">Meus anúncios</h3>
         <div class="container d-flex my-2">
             <button class="btn btn-outline-success">Novo</button>
@@ -21,26 +21,41 @@
             <tbody th:each="anuncio : ${anuncios}">
                 <tr>
                     <td>
-                        <img class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="${anuncio.fotos[0].foto.path}" alt="${anuncio.nome}">
+                        <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
+                            <img class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="${anuncio.fotos[0].foto.path}" alt="${anuncio.nome}">
+                        </a>
                     </td>
-                    <td class="align-items-center">
-                        <p th:text="${anuncio.nome}"></p>
+                    <td class="align-middle">
+                        <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
+                            <span th:text="${anuncio.nome}"></span>
+                        </a>
                     </td>
-                    <td class="align-items-center">
-                        <p th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></p>
+                    <td class="align-middle">
+                        <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
+                            <span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></span>
+                        </a>
                     </td>
-                    <td class="align-items-center">
-                        <p th:text="${anuncio.dataPublicacao} ? ${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')} : 'Não definido' "></p>
+                    <td class="align-middle">
+                        <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
+                            <span th:text="${anuncio.dataPublicacao} ? ${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')} : 'Não definido' "></span>
+                        </a>
                     </td>
-                    <td>
-                        <div class="d-flex mx-auto">
-                            <i class="bi bi-pencil-fill"></i>
-                            <i class="bi bi-trash3-fill"></i>
+                    <td class="align-middle">
+                        <div class="d-flex justify-items-start">
+                            <a class="anuncio-wrapper-link" style="width: 1rem;" th:href="${'anuncios/' + anuncio.id + '/edit'}"><i class="bi bi-pencil-fill"></i></a>
+                            <a class="anuncio-wrapper-link ms-2" style="width: 1rem;" th:href="${'anuncios/' + anuncio.id + '/delete'}"><i class="bi bi-trash3-fill"></i></a>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </main>
+    <section class="d-flex w-100 p-3" th:each="page : ${anuncios.totalPages}">
+        <div class="mx-auto">
+            <a th:href="@{/meus-anuncios?page=} + ${page - 1}">
+                <button class="btn btn-outline-success" th:text="${page}"></button>
+            </a>
+        </div>
+    </section>
 </body>
 <footer th:replace="~{ base::footer }"></footer>

@@ -121,4 +121,13 @@ public class Anuncio implements Serializable {
 		this.dataPublicacao = dataPublicacao;
 	}
 
+	@Override
+	public String toString() {
+		return "Anuncio [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", valor=" + valor + ", usuario="
+				+ usuario + ", fotos=" + fotos + ", statusAnuncio=" + statusAnuncio + ", dataPublicacao="
+				+ dataPublicacao + "]";
+	}
+
+
+	
 }

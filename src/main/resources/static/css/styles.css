@@ -212,3 +212,39 @@ main {
 .meus-anuncios-table-thumbnail {
 	max-height: 50px;
 }
+
+
+
+/* Página Editar anúncio */
+.editar-anuncio-thumbnail {
+	max-height: 20vw;
+}
+
+.anuncio-descricao-campo {
+	resize: none;
+	min-height: 7rem !important;
+}
+
+.anuncio-imagem-thumbnail {
+	height: 6rem;
+	border: 1px solid #e5e5e5;
+	cursor: pointer;
+	z-index: 100;
+}
+
+.anuncio-imagem-thumbnail-wrapper {
+	position: relative;
+}
+
+.editar-anuncio-imagem-apagar-btn {
+	position: absolute;
+	padding-right: 0 !important;
+	padding-top: 0 !important;
+	z-index: 0;
+	top: 0;
+	right: 0;
+}
+
+.anuncio-imagem-ativa {
+	border: 2px solid var(--darker-green);
+}
