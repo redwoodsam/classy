@@ -30,7 +30,13 @@
                         <p th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></p>
                     </td>
                     <td class="align-items-center">
-                        <p th:text="${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')}"></p>
+                        <p th:text="${anuncio.dataPublicacao} ? ${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')} : 'Não definido' "></p>
+                    </td>
+                    <td>
+                        <div class="d-flex mx-auto">
+                            <i class="bi bi-pencil-fill"></i>
+                            <i class="bi bi-trash3-fill"></i>
+                        </div>
                     </td>
                 </tr>
             </tbody>
