@@ -248,3 +248,18 @@ main {
 .anuncio-imagem-ativa {
 	border: 2px solid var(--darker-green);
 }
+
+.editar-anuncio-upload-wrapper {
+	user-select: none;
+	border: 2px dashed var(--darker-green);
+	border-radius: 20px;
+}
+
+.editar-anuncio-upload-wrapper span {
+	cursor: pointer;
+}
+
+#editar-anuncio-upload-icon {
+	cursor: pointer;
+	font-size: 3rem;
+}

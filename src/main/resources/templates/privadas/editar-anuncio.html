@@ -22,13 +22,17 @@
                 </div>
                 <input type="hidden" th:value="${anuncio.usuario.id}" name="usuario">
                 <h3 class="h3 mt-3">Galeria</h3>
-                <div class="d-flex">
+                <div id="galeria-container" class="d-flex flex-wrap">
                     <div class="anuncio-imagem-thumbnail-wrapper" th:each="foto : ${anuncio.fotos}">
                         <button th:id="'btn-' + ${foto.foto.id}" class="btn btn-close editar-anuncio-imagem-apagar-btn"></button>
                         <img th:id="${foto.foto.id}" class="anuncio-imagem-thumbnail ms-2" th:src="${foto.foto.path}" th:alt="${foto.foto.nome}">
                     </div>
-                    <div class="">
-
+                    <div id="upload-wrapper" class="d-flex text-center p-2 px-4 ms-4 align-items-center editar-anuncio-upload-wrapper">
+                        <label class="d-flex flex-column mx-auto align-items-center" for="editar-anuncio-upload-input">
+                            <i id="editar-anuncio-upload-icon" class="bi bi-plus-circle text-success"></i>
+                            <span class="text-success">Adicionar</span>
+                        </label>
+                        <input type="file" id="editar-anuncio-upload-input" name="img-upload" style="position: absolute; visibility: hidden;" accept="images/*" >
                     </div>
                 </div>
             </section>
