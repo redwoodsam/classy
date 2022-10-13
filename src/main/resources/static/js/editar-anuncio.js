@@ -5,6 +5,9 @@ const uploadInputWrapper = document.getElementById("upload-wrapper");
 const uploadInput = document.getElementById("editar-anuncio-upload-input");
 const visualizacaoImagem = document.getElementById("img-principal");
 
+const ID_ANUNCIO = window.location.pathname.split("/")[2];
+const UPLOAD_URL = `upload/`;
+
 // Configura a seleção da imagem principal.
 anuncioThumbnails.map(thumb => {
     thumb.addEventListener("click", (e) => {
@@ -22,10 +25,10 @@ anuncioThumbnails.map(thumb => {
     });
 });
 
-uploadInput.addEventListener("change", (e) => {
+uploadInput.addEventListener("change", async (e) => {
 
     let novaImagemWrapper = document.createElement("div");
-    novaImagemWrapper.className = "d-flex p-3 px-5 justify-content-center border align-items-center ms-2";
+    novaImagemWrapper.className = "anuncio-imagem-thumbnail-wrapper";
 
     let spinner = document.createElement("span");
     spinner.className = "spinner-border";
@@ -33,19 +36,41 @@ uploadInput.addEventListener("change", (e) => {
 
     novaImagemWrapper.appendChild(spinner);
     
-
-
     galeriaContainer.insertBefore(novaImagemWrapper, uploadInputWrapper);
 
-    setTimeout(() => {
-        novaImagemWrapper.removeChild(spinner);
-        let novaImagem = document.createElement("img");
-        novaImagem.src = e.target;
-        novaImagem.className = "img-thumbnail";
-        
-        novaImagemWrapper.appendChild(novaImagem);
+    sendData(UPLOAD_URL, uploadInput.files[0])
+        .then(async (response) => {
+            let respostaJson = await response.json();
+            novaImagemWrapper.removeChild(spinner);
 
-    }, 2000)
+            // Adicionando botão de remover
+            let novoBotao = document.createElement("button");
+            novoBotao.className = "btn btn-close editar-anuncio-imagem-apagar-btn";
+            novoBotao.id = `btn-${respostaJson.id}`;
+
+            // Adicionando nova imagem
+            let novaImagem = document.createElement("img");
+            novaImagem.src = await respostaJson.path;
+            novaImagem.className = "anuncio-imagem-thumbnail ms-2";
+            novaImagem.id = respostaJson.id;
+            
+            novaImagemWrapper.appendChild(novoBotao);
+            novaImagemWrapper.appendChild(novaImagem);
+        });
 
 
 });
+
+
+async function sendData(url, data) {
+    const formData  = new FormData();
+
+    formData.append("file", data);
+  
+    return await fetch(url, {
+      method: 'POST',
+      body: formData,
+      credentials: "same-origin"
+    });
+  
+  }

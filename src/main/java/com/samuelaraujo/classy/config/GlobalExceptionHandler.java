@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.samuelaraujo.classy.exception.NaoAutorizadoException;
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
 
 @RestControllerAdvice
@@ -21,6 +22,12 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<?> handleNaoEncontrado(NaoEncontradoException e) {
 		return ResponseEntity.notFound().build();
+	}
+
+	@ExceptionHandler(value = NaoAutorizadoException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ResponseEntity<?> handleNaoAutorizado(NaoAutorizadoException e) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 	}
 	
 }

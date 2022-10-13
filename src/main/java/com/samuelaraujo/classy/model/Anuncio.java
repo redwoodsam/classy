@@ -113,6 +113,10 @@ public class Anuncio implements Serializable {
 		this.statusAnuncio = statusAnuncio;
 	}
 
+	public void adicionarFoto(FotoAnuncio fotoAnuncio) {
+		this.fotos.add(fotoAnuncio);
+	}
+
 	public LocalDate getDataPublicacao() {
 		return dataPublicacao;
 	}
