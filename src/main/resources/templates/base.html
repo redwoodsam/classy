@@ -35,6 +35,14 @@
 	</nav>
 </header>
 
+<div th:fragment="toast-erro(mensagem)" class="toast bg-danger" style="position: absolute; top: 0; right: 0;" role="alert" aria-live="assertive" aria-atomic="true">
+	<div class="toast-body" th:text="${mensagem}"></div>
+</div>
+
+<div th:fragment="toast-erro(mensagem)" class="toast bg-success" style="position: absolute; top: 0; right: 0;" role="alert" aria-live="assertive" aria-atomic="true">
+	<div class="toast-body" th:text="${mensagem}"></div>
+</div>
+
 <footer th:fragment="footer" class="footer d-flex container-fluid p-3 text-white justify-content-around align-items-center">
 	<p class="m-0 text-white">Criado por Samuel Araújo @ 2022</p>
 </footer>

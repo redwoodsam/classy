@@ -18,6 +18,7 @@ import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.FotoAnuncio;
+import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.model.dto.ArquivoDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
 import com.samuelaraujo.classy.repository.AnuncioRepository;
@@ -45,6 +46,23 @@ public class AnuncioService {
 
 	public Page<Anuncio> listarPorEmailUsuario(String email, Pageable pageable) {
 		return anuncioRepository.listarPorEmailUsuario(email, pageable);
+	}
+
+	@Transactional
+	public Anuncio atualizar(Long id, AnuncioDTO anuncioDTO) {
+		Anuncio anuncioSave = buscarPorId(id);
+		FotoAnuncio thumbnail = fotoService.buscarFotoAnuncioPorIdFoto(anuncioDTO.getThumbnailId());
+
+		validaAutoria(anuncioSave);
+		validaAutoriaFotoAnuncio(anuncioSave, thumbnail);
+
+		anuncioSave.setNome(anuncioDTO.getTitulo());
+		anuncioSave.setDescricao(anuncioDTO.getDescricao());
+		anuncioSave.setValor(anuncioDTO.getValor());
+		anuncioSave.setThumbnail(thumbnail);
+		anuncioSave.setStatusAnuncio(anuncioDTO.getStatusAnuncio());
+
+		return anuncioRepository.save(anuncioSave);
 	}
 
 	public FileResponseDTO obterFoto(Long idAnuncio, String nomeFoto) {
@@ -88,12 +106,36 @@ public class AnuncioService {
 
 		return fotoSave;
 	}
+
+	// Apaga foto do anúncio
+	@Transactional
+	public void apagarFoto(Long idAnuncio, Long idFoto) {
+
+		Anuncio anuncio = buscarPorId(idAnuncio);
+		FotoAnuncio fotoAnuncio = fotoService.buscarFotoAnuncioPorIdFoto(idFoto);
+		
+		validaAutoria(anuncio);
+		validaAutoriaFotoAnuncio(anuncio, fotoAnuncio);
+
+		ArquivoDTO arquivoDto = new ArquivoDTO(anuncio.getUsuario().getId(), anuncio.getId(), fotoAnuncio.getFoto().getNome());
+		fileSystemService.excluirFotoAnuncio(arquivoDto);
+		
+		fotoService.apagarFotoAnuncio(idFoto);
+	}
 	
+
 	// Verifica se o usuário autenticado é o dono do anúncio
 	public void validaAutoria(Anuncio anuncio) {
 		String emailAnuncio = anuncio.getUsuario().getDadosPessoais().getEmail();
 		String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
 		if(!emailAnuncio.equals(emailLogado)) {
+			throw new NaoAutorizadoException("Acesso Negado");
+		}
+	}
+
+	// Verifica se a foto realmente pertence ao anúncio
+	public void validaAutoriaFotoAnuncio(Anuncio anuncio, FotoAnuncio fotoAnuncio) {
+		if(fotoAnuncio.getAnuncio().getId() != anuncio.getId()) {
 			throw new NaoAutorizadoException("Acesso Negado");
 		}
 	}

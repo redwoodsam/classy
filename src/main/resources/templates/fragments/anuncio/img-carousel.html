@@ -4,7 +4,11 @@
 			<span id="previous-button" class="carousel-slide-controller"><</span>
 			<span id="next-button" class="carousel-slide-controller">></span>
 		</div>
-		<img class="carousel-active-image d-flex" th:src="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.path : anuncio.fotos[0].foto.path}" th:alt="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.nome : anuncio.fotos[0].foto.nome}">
+		<img 
+			class="carousel-active-image d-flex" 
+			th:src="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.path : anuncio.fotos[0].foto.path}" 
+			th:alt="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.nome : anuncio.fotos[0].foto.nome}"
+		>
 	</div>
 	<div class="carousel-thumbnails-wrapper d-flex mt-3 border px-3">
 		<div class="m-2" th:each="foto : ${anuncio.fotos}">

@@ -91,7 +91,25 @@ public class FileSystemService {
 			pastaUsuario.mkdir();
 		}
 
-		try (InputStream inputStream = arquivoDTO.getArquivo().getInputStream()) {
+		try {
+			Files.deleteIfExists(pastaUsuario.toPath().resolve(arquivoDTO.getNomeModificado()));
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Erro ao apagar arquivo: %s", e.getMessage()));
+		}
+	}
+
+	// Apaga o arquivo físico no servidor
+	public void excluirFotoAnuncio(ArquivoDTO arquivoDTO) {
+		Path pathArquivos = Paths.get(diretorioArquivos);
+		Path pathUsuario = Paths.get(arquivoDTO.getUsuarioId());
+		Path pathAnuncio = Paths.get(arquivoDTO.getAnuncioId());
+		File pastaUsuario = new File(pathArquivos.resolve(pathUsuario).resolve(pathAnuncio).toString());
+
+		if (!pastaUsuario.exists()) {
+			pastaUsuario.mkdir();
+		}
+
+		try {
 			Files.deleteIfExists(pastaUsuario.toPath().resolve(arquivoDTO.getNomeModificado()));
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Erro ao apagar arquivo: %s", e.getMessage()));

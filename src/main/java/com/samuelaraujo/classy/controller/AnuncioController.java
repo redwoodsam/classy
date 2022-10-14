@@ -1,7 +1,6 @@
 package com.samuelaraujo.classy.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
-import com.samuelaraujo.classy.model.dto.EdicaoAnuncioDto;
+import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
 import com.samuelaraujo.classy.service.AnuncioService;
 import com.samuelaraujo.classy.service.UsuarioService;
@@ -43,23 +44,19 @@ public class AnuncioController {
 	public String anuncioEdit(@PathVariable Long id, Model model) {
 		
 		if(!UsuarioService.isAuthenticated()) return "redirect:/login";
-		Anuncio anuncio = anuncioService.buscarPorId(id);
-		
-		model.addAttribute("anuncio", anuncio);
+		Anuncio anuncioSave = anuncioService.buscarPorId(id);
+
+		model.addAttribute("anuncio", anuncioSave);
 		return "privadas/editar-anuncio";
 	}
 
 	@PostMapping("/{id}/edit")
-	public String atualizarAnuncio(@PathVariable Long id, EdicaoAnuncioDto anuncioDto) {
+	public String atualizarAnuncio(@PathVariable Long id, AnuncioDTO anuncioDto) {
 		
-		// Anuncio anuncio = anuncioService.buscarPorId(id);
+		anuncioService.atualizar(id, anuncioDto);
 		
-		// model.addAttribute("anuncio", anuncio);
-
-		System.out.println(anuncioDto);
-		
-
-		return String.format("redirect:/anuncios/%d/edit", id);
+		// return String.format("redirect:/anuncios/%d/edit", id);
+		return "forward:privadas/editar-anuncio";
 	}
 
 	@PostMapping("/{id}/upload")
@@ -70,6 +67,16 @@ public class AnuncioController {
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
 			.body(foto);
+	}
+
+	@DeleteMapping("/{idAnuncio}/fotos/{idFoto}")
+	public ResponseEntity<?> apagarImagem(@PathVariable Long idAnuncio, @PathVariable Long idFoto) {
+		
+		anuncioService.apagarFoto(idAnuncio, idFoto);
+
+		return ResponseEntity
+			.noContent()
+			.build();
 	}
 
 	@GetMapping("/{idAnuncio}/{nomeFoto}")

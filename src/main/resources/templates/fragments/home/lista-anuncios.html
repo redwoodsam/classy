@@ -4,7 +4,7 @@
 			<div class="row anuncio container p-3 m-0">
 				<a class="col-12 row anuncio-wrapper-link m-0" th:href="${'anuncios/' + anuncio.id}">
 					<div class="col-2">
-						<img class="img-fluid img-thumbnail" th:src="${anuncio.fotos[0].foto.path}" alt="${anuncio.nome}">
+						<img class="img-fluid img-thumbnail" th:src="${anuncio.thumbnail.foto.path}" alt="${anuncio.nome}">
 					</div>
 					<div class="col-8 d-flex flex-column">
 							<span th:text="${anuncio.nome}"></span>

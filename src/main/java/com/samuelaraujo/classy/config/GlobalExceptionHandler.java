@@ -12,11 +12,11 @@ import com.samuelaraujo.classy.exception.NaoEncontradoException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(value = RuntimeException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<?> handleNaoEncontrado(RuntimeException e) {
-		return ResponseEntity.badRequest().build();
-	}
+	// @ExceptionHandler(value = RuntimeException.class)
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public ResponseEntity<?> handleNaoEncontrado(RuntimeException e) {
+	// 	return ResponseEntity.badRequest().build();
+	// }
 	
 	@ExceptionHandler(value = NaoEncontradoException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

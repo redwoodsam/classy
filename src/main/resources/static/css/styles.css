@@ -237,6 +237,7 @@ main {
 }
 
 .editar-anuncio-imagem-apagar-btn {
+	visibility: hidden;
 	position: absolute;
 	padding-right: 0 !important;
 	padding-top: 0 !important;
@@ -247,6 +248,10 @@ main {
 
 .anuncio-imagem-ativa {
 	border: 2px solid var(--darker-green);
+}
+
+.btn-ativo {
+	visibility: visible;
 }
 
 .editar-anuncio-upload-wrapper {
