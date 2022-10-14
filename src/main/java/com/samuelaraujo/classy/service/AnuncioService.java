@@ -1,6 +1,5 @@
 package com.samuelaraujo.classy.service;
 
-import java.io.File;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -13,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.exception.NaoAutorizadoException;
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.Anuncio;
@@ -63,10 +63,8 @@ public class AnuncioService {
 	public Foto salvarFoto(Long idAnuncio, MultipartFile arquivo) {
 
 		Anuncio anuncio = buscarPorId(idAnuncio);
-		
 		validaAutoria(anuncio);
-
-		System.out.println(arquivo);
+		validaQuantidadeFotosMaxima(anuncio);
 
 		String nomeModificado = ArquivoUtil.modificarNome(arquivo.getOriginalFilename());
 		
@@ -75,14 +73,14 @@ public class AnuncioService {
 		novaFoto.setNome(nomeModificado);
 		novaFoto.setPath(nomeModificado);
 
-		ArquivoDTO arquivoDto = new ArquivoDTO(anuncio.getUsuario().getId(), anuncio.getId(), arquivo);
+		ArquivoDTO arquivoDto = new ArquivoDTO(anuncio.getUsuario().getId(), anuncio.getId(), nomeModificado, arquivo);
 		fileSystemService.armazenarArquivo(arquivoDto);
 		
 		Foto fotoSave = fotoService.salvar(novaFoto);
 
 		FotoAnuncio fotoAnuncio = new FotoAnuncio();
 		fotoAnuncio.setAnuncio(anuncio);
-		fotoAnuncio.setFoto(fotoSave);
+		fotoAnuncio.setFoto(novaFoto);
 
 		anuncio.adicionarFoto(fotoAnuncio);
 
@@ -97,6 +95,13 @@ public class AnuncioService {
 		String emailLogado = SecurityContextHolder.getContext().getAuthentication().getName();
 		if(!emailAnuncio.equals(emailLogado)) {
 			throw new NaoAutorizadoException("Acesso Negado");
+		}
+	}
+
+	// Verifica se o anúncio possui mais de 6 fotos(quantidade máxima)
+	public void validaQuantidadeFotosMaxima(Anuncio anuncio) {
+		if(anuncio.getFotos().size() >= 6) {
+			throw new DadoInvalidoException("Você só pode adicionar 6 fotos por anúncio.");
 		}
 	}
 

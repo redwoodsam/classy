@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -51,11 +52,22 @@ public class Anuncio implements Serializable {
 	@OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL)
 	private List<FotoAnuncio> fotos = new ArrayList<>();
 
+	@OneToOne
+	private FotoAnuncio thumbnail;
+
 	@Enumerated(EnumType.STRING)
 	private StatusAnuncio statusAnuncio = StatusAnuncio.ABERTO;
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataPublicacao = LocalDate.now();
+
+	public void setThumbnail(FotoAnuncio foto) {
+		this.thumbnail = foto;
+	}
+
+	public FotoAnuncio getThumbnail() {
+		return this.thumbnail;
+	}
 
 	public Long getId() {
 		return id;
@@ -132,6 +144,4 @@ public class Anuncio implements Serializable {
 				+ dataPublicacao + "]";
 	}
 
-
-	
 }

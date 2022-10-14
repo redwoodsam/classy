@@ -52,9 +52,7 @@ public class FileSystemService {
 
 		// Salva o arquivo para a pasta
 		try (InputStream inputStream = arquivoDTO.getArquivo().getInputStream()) {
-			String nomeModificado = ArquivoUtil.modificarNome(arquivoDTO.getArquivo().getOriginalFilename());
-
-			Files.copy(inputStream, pastaAnuncio.toPath().resolve(nomeModificado), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(inputStream, pastaAnuncio.toPath().resolve(arquivoDTO.getNomeModificado()), StandardCopyOption.REPLACE_EXISTING);
 			return arquivoDTO;
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Erro ao salvar arquivo: %s", e.getMessage()));

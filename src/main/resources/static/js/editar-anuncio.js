@@ -3,10 +3,13 @@ const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-im
 const galeriaContainer = document.getElementById("galeria-container");
 const uploadInputWrapper = document.getElementById("upload-wrapper");
 const uploadInput = document.getElementById("editar-anuncio-upload-input");
+const thumbnailInput = document.getElementById("editar-anuncio-thumbnail");
 const visualizacaoImagem = document.getElementById("img-principal");
 
 const ID_ANUNCIO = window.location.pathname.split("/")[2];
 const UPLOAD_URL = `upload/`;
+
+let thumbnailEscolhida = null;
 
 // Configura a seleção da imagem principal.
 anuncioThumbnails.map(thumb => {
@@ -20,6 +23,8 @@ anuncioThumbnails.map(thumb => {
 
         if(!imagemClicada.classList.contains("anuncio-imagem-ativa")) {
             imagemClicada.classList.add("anuncio-imagem-ativa");
+            thumbnailEscolhida = imagemClicada;
+            thumbnailInput.value = thumbnailInput;
         }
         
     });

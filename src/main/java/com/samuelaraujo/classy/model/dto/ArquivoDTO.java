@@ -19,9 +19,10 @@ public class ArquivoDTO {
         this.nomeModificado = nomeModificado;
     }
 
-    public ArquivoDTO(Long usuarioId, Long anuncioId, MultipartFile arquivo) {
+    public ArquivoDTO(Long usuarioId, Long anuncioId, String nomeModificado, MultipartFile arquivo) {
         this.usuarioId = usuarioId.toString();
         this.anuncioId = anuncioId.toString();
+        this.nomeModificado = nomeModificado;
         this.arquivo = arquivo;
     }
 

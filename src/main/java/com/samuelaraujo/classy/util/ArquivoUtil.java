@@ -1,7 +1,5 @@
 package com.samuelaraujo.classy.util;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
