@@ -20,6 +20,10 @@ botoesApagar.map(botao => {
         let id = e.target.id.split("-")[1];
         let thumbnail = anuncioThumbnails.filter(thumb => thumb.id == id)[0].parentNode;
 
+        if(anuncioThumbnails.length <= 1) {
+            thumbnailInput.value = null;
+        }
+
         deleteData(`${FOTO_URL}${id}`)
             .then(async response => {
                 if(response.status !== 204) {
@@ -116,8 +120,26 @@ uploadInput.addEventListener("change", async (e) => {
                 }
             });
 
+            novaImagem.addEventListener("click", (e) => {
+                anuncioThumbnails.forEach(thumb => {
+                    if(thumb.classList.contains("anuncio-imagem-ativa")) {
+                        thumb.classList.remove("anuncio-imagem-ativa");
+                    }
+                });
+        
+                if(!novaImagem.classList.contains("anuncio-imagem-ativa")) {
+                    novaImagem.classList.add("anuncio-imagem-ativa");
+                    thumbnailInput.value = novaImagem.id;
+                }
+                
+            });
+
             novoBotao.addEventListener("click", (e) => {
                 let id = respostaJson.id;
+
+                if(anuncioThumbnails.length <= 1) {
+                    thumbnailInput.value = null;
+                }
         
                 deleteData(`${FOTO_URL}${id}`)
                     .then(async response => {

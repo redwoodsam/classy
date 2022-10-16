@@ -35,8 +35,9 @@ public class EdicaoAnuncioDto implements Serializable {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
+    public void setValor(String valor) {
+        String valorFormatado = new DecimalFormat("#,##0.00").format(valor);
+        this.valor = new BigDecimal(valorFormatado);
     }
 
     public String getFotoPrincipal() {

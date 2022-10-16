@@ -2,6 +2,8 @@ package com.samuelaraujo.classy.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class AnuncioDTO implements Serializable {
     private String titulo;
 
     @NotNull(message = "O campo valor é obrigatório.")
-    private BigDecimal valor;
+    private double valor;
 
     @Lob
     @NotBlank(message = "O campo descrição é obrigatório.")
@@ -40,12 +42,16 @@ public class AnuncioDTO implements Serializable {
         this.titulo = titulo;
     }
 
-    public BigDecimal getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
+    public void setValor(String valor) {
+        try {
+            this.valor = new DecimalFormat("#,##0.00").parse(valor).doubleValue();
+        } catch(ParseException e) {
+            this.valor = 0d;
+        }
     }
 
     public String getDescricao() {

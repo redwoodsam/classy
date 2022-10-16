@@ -55,8 +55,7 @@ public class AnuncioController {
 		
 		anuncioService.atualizar(id, anuncioDto);
 		
-		// return String.format("redirect:/anuncios/%d/edit", id);
-		return "forward:privadas/editar-anuncio";
+		return "redirect:/meus-anuncios";
 	}
 
 	@PostMapping("/{id}/upload")

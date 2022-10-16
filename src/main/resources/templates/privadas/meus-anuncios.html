@@ -22,7 +22,9 @@
                 <tr>
                     <td>
                         <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
-                            <img class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="${anuncio.fotos[0].foto.path}" alt="${anuncio.nome}">
+                            <img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" src="https://placehold.jp/8c8c8c/ffffff/150x150.png?text=Sem%20imagem" th:alt="${anuncio.nome}">
+                            <img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.fotos[0].foto.nome}" th:alt="${anuncio.nome}">
+                            <img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}" th:alt="${anuncio.nome}">
                         </a>
                     </td>
                     <td class="align-middle">

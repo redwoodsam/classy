@@ -1,5 +1,6 @@
 package com.samuelaraujo.classy.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -18,6 +19,7 @@ import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.FotoAnuncio;
+import com.samuelaraujo.classy.model.Thumbnail;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.model.dto.ArquivoDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
@@ -51,15 +53,20 @@ public class AnuncioService {
 	@Transactional
 	public Anuncio atualizar(Long id, AnuncioDTO anuncioDTO) {
 		Anuncio anuncioSave = buscarPorId(id);
-		FotoAnuncio thumbnail = fotoService.buscarFotoAnuncioPorIdFoto(anuncioDTO.getThumbnailId());
+
+		if(anuncioDTO.getThumbnailId() != null) {
+			FotoAnuncio thumbnail = fotoService.buscarFotoAnuncioPorIdFoto(anuncioDTO.getThumbnailId());
+			anuncioSave.setThumbnail(new Thumbnail(thumbnail));
+			validaAutoriaFotoAnuncio(anuncioSave, thumbnail);
+		} else {
+			anuncioSave.apagarThumbnail();
+		}
 
 		validaAutoria(anuncioSave);
-		validaAutoriaFotoAnuncio(anuncioSave, thumbnail);
 
 		anuncioSave.setNome(anuncioDTO.getTitulo());
 		anuncioSave.setDescricao(anuncioDTO.getDescricao());
-		anuncioSave.setValor(anuncioDTO.getValor());
-		anuncioSave.setThumbnail(thumbnail);
+		anuncioSave.setValor(new BigDecimal(anuncioDTO.getValor()));
 		anuncioSave.setStatusAnuncio(anuncioDTO.getStatusAnuncio());
 
 		return anuncioRepository.save(anuncioSave);
@@ -119,10 +126,46 @@ public class AnuncioService {
 
 		ArquivoDTO arquivoDto = new ArquivoDTO(anuncio.getUsuario().getId(), anuncio.getId(), fotoAnuncio.getFoto().getNome());
 		fileSystemService.excluirFotoAnuncio(arquivoDto);
+
+		if(anuncio.getThumbnail() != null && fotoAnuncio.getId() == anuncio.getThumbnail().getThumbnailId()) {
+			resetaThumbnail(anuncio);
+		}
 		
 		fotoService.apagarFotoAnuncio(idFoto);
 	}
 	
+
+	@Transactional
+	private void resetaThumbnail(Anuncio anuncio) {
+
+		if(anuncio.getFotos().size() <= 1) {
+			anuncio.apagarThumbnail();
+		} else {
+			FotoAnuncio fotoAnuncioAtual = fotoService.buscarFotoAnuncioPorIdFoto(anuncio.getThumbnail().getThumbnailId());
+	
+			int indiceThumbnail = anuncio.getFotos().indexOf(fotoAnuncioAtual);
+			int indiceFotoSeguinte = obterIndiceSeguinte(indiceThumbnail, anuncio.getFotos());
+			Long id = anuncio.getFotos().get(indiceFotoSeguinte).getFoto().getId();
+	
+			FotoAnuncio fotoNova = fotoService.buscarFotoAnuncioPorIdFoto(id);
+	
+			anuncio.setThumbnail(fotoNova);
+	
+			anuncioRepository.save(anuncio);
+		}
+
+	}
+
+	private int obterIndiceSeguinte(int indiceAtual, List<?> lista) {
+		int tamanho = lista.size();
+		int proximoIndice = indiceAtual + 1;
+
+		if(proximoIndice == tamanho) {
+			return 0;
+		}
+
+		return proximoIndice;
+	}
 
 	// Verifica se o usuário autenticado é o dono do anúncio
 	public void validaAutoria(Anuncio anuncio) {

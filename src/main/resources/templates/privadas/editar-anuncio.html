@@ -12,7 +12,7 @@
                         <label for="valor">Valor:</label>
                         <div class="input-group ms-2">
                             <span class="input-group-text">R$</span>
-                            <input id="valor-input" onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" class="form-control" type="text" th:value="${anuncio.valor}"  name="valor">
+                            <input id="valor-input" onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))" class="form-control" type="text" th:value="${#numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"  name="valor">
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                         <img 
                             th:id="${foto.foto.id}" 
                             class="anuncio-imagem-thumbnail ms-2" 
-                            th:classappend="${anuncio.thumbnail != null && anuncio.thumbnail.id == foto.foto.id ? 'anuncio-imagem-ativa' : ''}" 
+                            th:classappend="${anuncio.thumbnail != null && anuncio.thumbnail.thumbnailId == foto.foto.id ? 'anuncio-imagem-ativa' : ''}" 
                             th:src="${foto.foto.path}" 
                             th:alt="${foto.foto.nome}"
                         >
@@ -57,7 +57,8 @@
                 name="thumbnailId" 
                 style="position: absolute; visibility: hidden;" 
                 accept="images/*"
-                th:value="${anuncio.thumbnail != null ? anuncio.thumbnail.id : anuncio.fotos[0].foto.id}"
+                th:if="${#lists.size(anuncio.fotos) > 0}"
+                th:value="${anuncio.thumbnail != null ? anuncio.thumbnail.thumbnailId : anuncio.fotos[0].foto.id}"
             >
             <button type="submit" class="btn btn-success">Salvar</button>
         </form>

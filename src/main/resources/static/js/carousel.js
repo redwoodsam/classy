@@ -3,7 +3,7 @@
 */
 
 let images = document.getElementsByClassName("carousel-image");
-let activeImage = document.getElementsByClassName("carousel-active-image")[0]
+let activeImage = document.getElementsByClassName("carousel-active-image")[0];
 let previousButton = document.getElementById("previous-button");
 let nextButton = document.getElementById("next-button");
 let controllerButtons = document.getElementsByClassName("carousel-slide-controllers")[0];

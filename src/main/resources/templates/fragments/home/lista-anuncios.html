@@ -1,10 +1,15 @@
 <main class="lista-anuncios-wrapper container p-3" th:fragment="lista-anuncios(anuncios)">
-	<ul class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
+	<ul th:if="${#lists.size(anuncios) == 0}" class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
+
+	</ul>
+	<ul th:if="${#lists.size(anuncios) > 0}" class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
 		<li class="m-0 p-0">
 			<div class="row anuncio container p-3 m-0">
 				<a class="col-12 row anuncio-wrapper-link m-0" th:href="${'anuncios/' + anuncio.id}">
 					<div class="col-2">
-						<img class="img-fluid img-thumbnail" th:src="${anuncio.thumbnail.foto.path}" alt="${anuncio.nome}">
+						<img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail" src="https://placehold.jp/8c8c8c/ffffff/120x80.png?text=Sem%20imagem" alt="Sem imagem">
+						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.fotos[0].foto.nome}" th:alt="${anuncio.nome}">
+						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}" class="img-fluid img-thumbnail" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}" th:alt="${anuncio.nome}">
 					</div>
 					<div class="col-8 d-flex flex-column">
 							<span th:text="${anuncio.nome}"></span>

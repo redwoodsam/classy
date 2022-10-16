@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,12 +16,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.samuelaraujo.classy.enums.StatusAnuncio;
@@ -52,8 +57,8 @@ public class Anuncio implements Serializable {
 	@OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL)
 	private List<FotoAnuncio> fotos = new ArrayList<>();
 
-	@OneToOne
-	private FotoAnuncio thumbnail;
+	@Embedded
+	private Thumbnail thumbnail;
 
 	@Enumerated(EnumType.STRING)
 	private StatusAnuncio statusAnuncio = StatusAnuncio.ABERTO;
@@ -61,12 +66,21 @@ public class Anuncio implements Serializable {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataPublicacao = LocalDate.now();
 
-	public void setThumbnail(FotoAnuncio foto) {
-		this.thumbnail = foto;
+
+	public Thumbnail getThumbnail() {
+		return this.thumbnail;
 	}
 
-	public FotoAnuncio getThumbnail() {
-		return this.thumbnail;
+	public void apagarThumbnail() {
+		this.thumbnail = null;
+	}
+
+	public void setThumbnail(Thumbnail thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public void setThumbnail(FotoAnuncio fotoAnuncio) {
+		this.thumbnail = new Thumbnail(fotoAnuncio);
 	}
 
 	public Long getId() {

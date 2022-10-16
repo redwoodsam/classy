@@ -5,12 +5,25 @@
 			<span id="next-button" class="carousel-slide-controller">></span>
 		</div>
 		<img 
-			class="carousel-active-image d-flex" 
-			th:src="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.path : anuncio.fotos[0].foto.path}" 
-			th:alt="${anuncio.thumbnail != null ? anuncio.thumbnail.foto.nome : anuncio.fotos[0].foto.nome}"
+			class="carousel-active-image d-flex"
+			th:if="${#lists.size(anuncio.fotos) == 0}"
+			src="https://placehold.jp/8c8c8c/ffffff/480x240.png?text=Sem%20imagem"
+			alt="Sem imagem"
+		>
+		<img 
+			class="carousel-active-image d-flex"
+			th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}"
+			th:src="${anuncio.thumbnail == null ? anuncio.fotos[0].foto.path : ''}" 
+			th:alt="${anuncio.thumbnail == null ? anuncio.fotos[0].foto.nome : ''}"
+		>
+		<img 
+			class="carousel-active-image d-flex"
+			th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}"
+			th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}"
+			th:alt="${anuncio.thumbnail.thumbnailNome}"
 		>
 	</div>
-	<div class="carousel-thumbnails-wrapper d-flex mt-3 border px-3">
+	<div th:if="${#lists.size(anuncio.fotos) > 0}" class="carousel-thumbnails-wrapper d-flex mt-3 border px-3">
 		<div class="m-2" th:each="foto : ${anuncio.fotos}">
 			<img th:id="${foto.id}" class="carousel-image" th:src="${anuncio.id} + '/' + ${foto.foto.path}" th:alt="${foto.foto.nome}" >
 		</div>
