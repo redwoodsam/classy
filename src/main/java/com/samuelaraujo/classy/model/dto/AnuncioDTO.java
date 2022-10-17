@@ -2,10 +2,12 @@ package com.samuelaraujo.classy.model.dto;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -48,9 +50,14 @@ public class AnuncioDTO implements Serializable {
 
     public void setValor(String valor) {
         try {
-            Currency moedaReal = Currency.getInstance("BRL");
+            // Define os símbolos para o formato brasileiro. 
+            // (vírgula para separador decimal e ponto para separador de milhar)
+            DecimalFormatSymbols regiaoBR = 
+                new DecimalFormatSymbols(new Locale("pt", "BR"));
+
+            // Configura o formatador
             DecimalFormat formatador = new DecimalFormat("#,##0.00");
-            formatador.setCurrency(moedaReal);
+            formatador.setDecimalFormatSymbols(regiaoBR);
 
             this.valor = formatador.parse(valor).toString();
         } catch(ParseException e) {

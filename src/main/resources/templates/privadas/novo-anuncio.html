@@ -34,20 +34,6 @@
                 </div>
                 <h3 class="h3 mt-3">Galeria</h3>
                 <div id="galeria-container" class="d-flex flex-wrap mx-auto">
-                    <!-- <div class="anuncio-imagem-thumbnail-wrapper" th:each="foto, iter : ${anuncio.fotos}">
-                        <button 
-                            th:id="'btn-' + ${foto.foto.id}"
-                            type="button"
-                            class="btn btn-close editar-anuncio-imagem-apagar-btn">
-                        </button>
-                        <img 
-                            th:id="${foto.foto.id}" 
-                            class="anuncio-imagem-thumbnail me-2" 
-                            th:classappend="${anuncio.thumbnail != null && anuncio.thumbnail.thumbnailId == foto.foto.id ? 'anuncio-imagem-ativa' : ''}" 
-                            th:src="${foto.foto.path}" 
-                            th:alt="${foto.foto.nome}"
-                        >
-                    </div> -->
                     <div id="upload-wrapper" class="d-flex text-center p-2 px-4 align-items-center editar-anuncio-upload-wrapper">
                         <label class="d-flex flex-column mx-auto align-items-center" for="editar-anuncio-upload-input">
                             <i id="editar-anuncio-upload-icon" class="bi bi-plus-circle text-success"></i>
@@ -74,7 +60,7 @@
             <button type="submit" class="btn btn-success">Salvar</button>
         </form>
     </main>
-    <script type="text/javascript" th:src="@{/js/editar-anuncio.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/novo-anuncio.js}" ></script>
     <script>
         const mensagem = document.querySelector(".mensagem-confirmacao");
         setTimeout(() => {
