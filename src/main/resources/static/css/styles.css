@@ -48,11 +48,6 @@ ul, li {
 	color: #fff !important;
 }
 
-main {
-	min-height: 100%;
-}
-
-
 .footer {
 	background-color: var(--dark-green)
 }
@@ -213,7 +208,10 @@ main {
 	max-height: 50px;
 }
 
-
+/* Página meus Anúncios */
+.meus-anuncios-wrapper {
+	min-height: 100%;
+}
 
 /* Página Editar anúncio */
 .editar-anuncio-thumbnail {
@@ -239,7 +237,7 @@ main {
 .editar-anuncio-imagem-apagar-btn {
 	visibility: hidden;
 	position: absolute;
-	padding-right: 0 !important;
+	padding-right: 10% !important;
 	padding-top: 0 !important;
 	z-index: 0;
 	top: 0;
@@ -267,4 +265,15 @@ main {
 #editar-anuncio-upload-icon {
 	cursor: pointer;
 	font-size: 3rem;
+}
+
+@keyframes aparecer {
+	0% { opacity: 0%; }
+	25% { opacity: 25%; }
+	50% { opacity: 50%; }
+	100% { opacity: 100%; }
+}
+
+.mensagem-confirmacao {
+	animation: aparecer 0.2s;
 }

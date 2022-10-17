@@ -1,5 +1,12 @@
 package com.samuelaraujo.classy.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -10,12 +17,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
@@ -51,10 +60,16 @@ public class AnuncioController {
 	}
 
 	@PostMapping("/{id}/edit")
-	public String atualizarAnuncio(@PathVariable Long id, AnuncioDTO anuncioDto) {
+	public String atualizarAnuncio(@PathVariable Long id, @Valid AnuncioDTO anuncioDto, BindingResult result, RedirectAttributes redirectAttributes) {
 		
 		anuncioService.atualizar(id, anuncioDto);
-		
+		if(result.hasErrors()) {
+			redirectAttributes.addFlashAttribute("mensagem", "Falha ao atualizar anúncio");
+			return String.format("redirect:/%d/edit", id);
+		}
+
+		redirectAttributes.addFlashAttribute("mensagem", "Anúncio atualizado com sucesso");
+
 		return "redirect:/meus-anuncios";
 	}
 
@@ -88,6 +103,15 @@ public class AnuncioController {
 			.contentType(MediaType.parseMediaType(foto.getContentType()))
 			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + foto.getNomeArquivo() + "\"")
 			.body(foto.getResource());
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public String handleErrosValidacao(HttpServletRequest request, ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
+
+		List<String> mensagens = ex.getConstraintViolations().stream().map(violacao -> violacao.getMessage()).collect(Collectors.toList());
+
+		redirectAttributes.addFlashAttribute("mensagens", mensagens);
+		return String.format("redirect:%s",request.getRequestURL().toString());
 	}
 	
 }

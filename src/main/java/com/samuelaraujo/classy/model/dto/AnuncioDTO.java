@@ -1,10 +1,10 @@
 package com.samuelaraujo.classy.model.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import javax.persistence.EnumType;
@@ -21,7 +21,7 @@ public class AnuncioDTO implements Serializable {
     private String titulo;
 
     @NotNull(message = "O campo valor é obrigatório.")
-    private double valor;
+    private String valor;
 
     @Lob
     @NotBlank(message = "O campo descrição é obrigatório.")
@@ -42,15 +42,19 @@ public class AnuncioDTO implements Serializable {
         this.titulo = titulo;
     }
 
-    public Double getValor() {
+    public String getValor() {
         return valor;
     }
 
     public void setValor(String valor) {
         try {
-            this.valor = new DecimalFormat("#,##0.00").parse(valor).doubleValue();
+            Currency moedaReal = Currency.getInstance("BRL");
+            DecimalFormat formatador = new DecimalFormat("#,##0.00");
+            formatador.setCurrency(moedaReal);
+
+            this.valor = formatador.parse(valor).toString();
         } catch(ParseException e) {
-            this.valor = 0d;
+            this.valor = "0";
         }
     }
 

@@ -1,6 +1,5 @@
 package com.samuelaraujo.classy.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -54,7 +53,7 @@ public class AnuncioService {
 	public Anuncio atualizar(Long id, AnuncioDTO anuncioDTO) {
 		Anuncio anuncioSave = buscarPorId(id);
 
-		if(anuncioDTO.getThumbnailId() != null) {
+		if(anuncioDTO.getThumbnailId() != null && anuncioDTO.getThumbnailId() != 0) {
 			FotoAnuncio thumbnail = fotoService.buscarFotoAnuncioPorIdFoto(anuncioDTO.getThumbnailId());
 			anuncioSave.setThumbnail(new Thumbnail(thumbnail));
 			validaAutoriaFotoAnuncio(anuncioSave, thumbnail);
@@ -66,7 +65,7 @@ public class AnuncioService {
 
 		anuncioSave.setNome(anuncioDTO.getTitulo());
 		anuncioSave.setDescricao(anuncioDTO.getDescricao());
-		anuncioSave.setValor(new BigDecimal(anuncioDTO.getValor()));
+		anuncioSave.setValor(Double.parseDouble(anuncioDTO.getValor()));
 		anuncioSave.setStatusAnuncio(anuncioDTO.getStatusAnuncio());
 
 		return anuncioRepository.save(anuncioSave);

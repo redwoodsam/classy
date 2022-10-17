@@ -19,7 +19,7 @@
 							</div>
 					</div>
 					<div class="col-2 d-flex align-items-center justify-content-end">
-						<span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></span>
+						<span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2,'COMMA')}"></span>
 					</div>
 				</a>
 			</div>

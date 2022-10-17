@@ -41,15 +41,15 @@ public class Anuncio implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
+	@NotBlank(message = "O campo Título é obrigatório")
 	private String nome;
 
 	@Lob
-	@NotBlank
+	@NotBlank(message = "O campo Descrição é obrigatório")
 	private String descricao;
 
-	@NotNull
-	private BigDecimal valor;
+	@NotNull(message = "O campo Valor é obrigatório")
+	private double valor;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Usuario usuario;
@@ -107,11 +107,11 @@ public class Anuncio implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public BigDecimal getValor() {
+	public double getValor() {
 		return valor;
 	}
 
-	public void setValor(BigDecimal valor) {
+	public void setValor(double valor) {
 		this.valor = valor;
 	}
 

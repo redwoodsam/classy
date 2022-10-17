@@ -1,10 +1,11 @@
 <head th:replace="~{ base::head }"></head>
 <body>
     <header th:replace="~{ base::header }"></header>
+    <div th:if="${mensagem}" th:text="${mensagem}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-success p-2 px-4 m-3 rounded text-white"></div>
     <main class="meus-anuncios-wrapper border border-success rounded container p-3 my-2 text-center mb-0" th:fragment="lista-anuncios(anuncios)">
         <h3 class="h3">Meus anúncios</h3>
         <div class="container d-flex my-2">
-            <button class="btn btn-outline-success">Novo</button>
+            <a th:href="@{/meus-anuncios/novo}" class="btn btn-outline-success">Novo</a>
             <div class="input-group h-3 mx-3">
                 <input type="text" class="form-control" placeholder="Pesquisar um anúncio">
                 <button class="btn btn-success">Pesquisar</button>
@@ -34,7 +35,7 @@
                     </td>
                     <td class="align-middle">
                         <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
-                            <span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 3, 'POINT', 2,'COMMA')}"></span>
+                            <span th:text="${'R$ ' + #numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2,'COMMA')}"></span>
                         </a>
                     </td>
                     <td class="align-middle">
@@ -59,5 +60,15 @@
             </a>
         </div>
     </section>
+    <script>
+        const mensagem = document.querySelector(".mensagem-confirmacao");
+
+        if(mensagem) {
+            setTimeout(() => {
+                const paiMensagem = mensagem.parentNode;
+                paiMensagem.removeChild(mensagem);
+            }, 5000);
+        }
+    </script>
 </body>
 <footer th:replace="~{ base::footer }"></footer>

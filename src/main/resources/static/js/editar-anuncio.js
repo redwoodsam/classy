@@ -20,10 +20,6 @@ botoesApagar.map(botao => {
         let id = e.target.id.split("-")[1];
         let thumbnail = anuncioThumbnails.filter(thumb => thumb.id == id)[0].parentNode;
 
-        if(anuncioThumbnails.length <= 1) {
-            thumbnailInput.value = null;
-        }
-
         deleteData(`${FOTO_URL}${id}`)
             .then(async response => {
                 if(response.status !== 204) {
@@ -33,7 +29,16 @@ botoesApagar.map(botao => {
                     thumbnail.removeEventListener("mouseleave", () => {}, true);
                     galeriaContainer.removeChild(thumbnail);
                 }
-            })
+        });
+        
+        // Ao apagar imagem no servidor, remove da lista de thumbnails.
+        let indiceFotoApagada = anuncioThumbnails.findIndex(thumb => thumb.id == id);
+        anuncioThumbnails.splice(indiceFotoApagada, 1);
+
+        // Caso não haja mais imagens no anúncio, seta a thumbnail para o número zero, indicando sem imagem.
+        if(anuncioThumbnails.length < 1) {
+            thumbnailInput.value = 0;
+        }
 
     });
 })
@@ -44,8 +49,6 @@ thumbnailContainers.map(container => {
         if(!botaoFechar.classList.contains("btn-ativo")) {
             botaoFechar.classList.add("btn-ativo");
         }
-
-        printToast('sucesso', 'Teste', document.body);
     })
 
     container.addEventListener("mouseleave", (e) => {
@@ -102,7 +105,7 @@ uploadInput.addEventListener("change", async (e) => {
             // Adicionando nova imagem
             let novaImagem = document.createElement("img");
             novaImagem.src = await respostaJson.path;
-            novaImagem.className = "anuncio-imagem-thumbnail ms-2";
+            novaImagem.className = "anuncio-imagem-thumbnail me-2";
             novaImagem.id = respostaJson.id;
             
             novaImagemWrapper.appendChild(novoBotao);
@@ -136,26 +139,23 @@ uploadInput.addEventListener("change", async (e) => {
 
             novoBotao.addEventListener("click", (e) => {
                 let id = respostaJson.id;
-
+                
                 if(anuncioThumbnails.length <= 1) {
                     thumbnailInput.value = null;
                 }
-        
+                
                 deleteData(`${FOTO_URL}${id}`)
-                    .then(async response => {
-                        if(response.status !== 204) {
-                            console.log("Erro ao apagar foto - ", await response.json())
-                        } else {
-                            thumbnail.removeEventListener("mouseenter", () => {}, true);
-                            thumbnail.removeEventListener("mouseleave", () => {}, true);
-                            galeriaContainer.removeChild(novaImagemWrapper);
-                        }
-                    })
-        
+                .then(async response => {
+                    if(response.status !== 204) {
+                        console.log("Erro ao apagar foto - ", await response.json())
+                    } else {
+                        thumbnail.removeEventListener("mouseenter", () => {}, true);
+                        thumbnail.removeEventListener("mouseleave", () => {}, true);
+                        galeriaContainer.removeChild(novaImagemWrapper);
+                    }
+                })
             });
         });
-
-
 });
 
 // Envia uma requisição DELETE ao servidor de uma URL
