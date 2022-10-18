@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +24,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
+import com.samuelaraujo.classy.model.dto.AnuncioRespostaDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
 import com.samuelaraujo.classy.service.AnuncioService;
 import com.samuelaraujo.classy.service.UsuarioService;
@@ -47,6 +51,22 @@ public class AnuncioController {
 		
 		model.addAttribute("anuncio", anuncio);
 		return "anuncio";
+	}
+
+	@PostMapping
+	public ResponseEntity<?> cadastrar(@Valid AnuncioDTO anuncioDTO, BindingResult result) {
+		try {
+			AnuncioRespostaDTO anuncio = anuncioService.salvar(anuncioDTO);
+
+			return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(anuncio);
+
+		} catch (DadoInvalidoException e) {
+			return ResponseEntity
+				.badRequest()
+				.body(e.getMessage());
+		}
 	}
 
 	@GetMapping("/{id}/edit")

@@ -36,6 +36,8 @@ public class Foto implements Serializable {
 	@NotBlank
 	private String formato;
 
+	private Long usuarioId;
+
 	public Long getId() {
 		return id;
 	}
@@ -66,6 +68,14 @@ public class Foto implements Serializable {
 
 	public void setFormato(String formato) {
 		this.formato = formato;
+	}
+
+	public void setUsuarioId(Long usuarioId) {
+		this.usuarioId = usuarioId;
+	}
+
+	public Long getUsuarioId(){
+		return this.usuarioId;
 	}
 
 }

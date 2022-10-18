@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.dto.ArquivoDTO;
-import com.samuelaraujo.classy.util.ArquivoUtil;
+import com.samuelaraujo.classy.model.dto.ArquivoTemporarioDTO;
 
 @Service
 public class FileSystemService {
@@ -59,6 +59,33 @@ public class FileSystemService {
 		}
 	}
 
+	public ArquivoTemporarioDTO armazenarArquivo(ArquivoTemporarioDTO arquivoTemporarioDTO) {
+		Path pathArquivos = Paths.get(diretorioArquivos);
+		Path pathUsuario = Paths.get(arquivoTemporarioDTO.getUsuarioId());
+		Path pathTemp = Paths.get("temp");
+
+		File pastaUsuario = new File(pathArquivos.resolve(pathUsuario).toString());
+		File pastaAnuncio = new File(pathArquivos.resolve(pathUsuario).resolve(pathTemp).toString());
+
+		// Cria a pasta do usuário com o seu ID caso não existir
+		if (!pastaUsuario.exists()) {
+			pastaUsuario.mkdir();
+		}
+
+		// Cria a pasta do Anúncio com o seu ID caso não existir
+		if (!pastaAnuncio.exists()) {
+			pastaAnuncio.mkdir();
+		}
+
+		// Salva o arquivo para a pasta
+		try (InputStream inputStream = arquivoTemporarioDTO.getArquivo().getInputStream()) {
+			Files.copy(inputStream, pastaAnuncio.toPath().resolve(arquivoTemporarioDTO.getNomeModificado()), StandardCopyOption.REPLACE_EXISTING);
+			return arquivoTemporarioDTO;
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Erro ao salvar arquivo: %s", e.getMessage()));
+		}
+	}
+
 	// Busca um arquivo salvo no servidor
 	public Resource obterArquivoSalvo(ArquivoDTO arquivoDTO) {
 		Path pathUsuario = Paths.get(arquivoDTO.getUsuarioId());
@@ -93,6 +120,25 @@ public class FileSystemService {
 
 		try {
 			Files.deleteIfExists(pastaUsuario.toPath().resolve(arquivoDTO.getNomeModificado()));
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Erro ao apagar arquivo: %s", e.getMessage()));
+		}
+	}
+
+	// Apaga o arquivo físico no servidor (Usado como rollback caso ocorra alguma
+	// falha na persistência)
+	public void excluirArquivoTemporario(ArquivoTemporarioDTO arquivoTemporarioDTO) {
+		Path pathArquivos = Paths.get(diretorioArquivos);
+		Path pathUsuario = Paths.get(arquivoTemporarioDTO.getUsuarioId());
+		Path pathTemp = Paths.get("temp");
+		File pastaUsuario = new File(pathArquivos.resolve(pathUsuario).resolve(pathTemp).toString());
+
+		if (!pastaUsuario.exists()) {
+			pastaUsuario.mkdir();
+		}
+
+		try {
+			Files.deleteIfExists(pastaUsuario.toPath().resolve(arquivoTemporarioDTO.getNomeModificado()));
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Erro ao apagar arquivo: %s", e.getMessage()));
 		}

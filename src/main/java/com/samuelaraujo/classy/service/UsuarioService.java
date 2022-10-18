@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.samuelaraujo.classy.exception.DadoInvalidoException;
+import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.DadosPessoais;
 import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.CadastroDto;
@@ -35,6 +36,10 @@ public class UsuarioService implements UserDetailsService {
 
 	public List<Usuario> listarTodos() {
 		return usuarioRepository.findAll();
+	}
+
+	public Usuario buscarPorId(Long id) {
+		return usuarioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado"));
 	}
 
 	@Transactional

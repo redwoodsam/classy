@@ -4,19 +4,17 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.samuelaraujo.classy.enums.StatusAnuncio;
+import com.samuelaraujo.classy.model.Anuncio;
 
-public class AnuncioDTO implements Serializable {
+public class AnuncioRespostaDTO implements Serializable {
+
+    private Long id;
 
     @NotBlank(message = "O campo título é obrigatório.")
     private String titulo;
@@ -28,12 +26,15 @@ public class AnuncioDTO implements Serializable {
     @NotBlank(message = "O campo descrição é obrigatório.")
     private String descricao;
 
-    private List<Long> fotosId = new ArrayList<>();
+    public AnuncioRespostaDTO(Anuncio anuncio) {
+        this.id = anuncio.getId();
+        this.titulo = anuncio.getNome();
+        this.valor = anuncio.getValor().toString();
+        this.descricao = anuncio.getDescricao();
+    }
 
-    private Long thumbnailId;
-
-    @Enumerated(EnumType.STRING)
-    private StatusAnuncio statusAnuncio = StatusAnuncio.ABERTO;
+    public AnuncioRespostaDTO() {
+    }
 
     public String getTitulo() {
         return titulo;
@@ -49,17 +50,16 @@ public class AnuncioDTO implements Serializable {
 
     public void setValor(String valor) {
         try {
-            // Define os símbolos para o formato brasileiro. 
+            // Define os símbolos para o formato brasileiro.
             // (vírgula para separador decimal e ponto para separador de milhar)
-            DecimalFormatSymbols regiaoBR = 
-                new DecimalFormatSymbols(new Locale("pt", "BR"));
+            DecimalFormatSymbols regiaoBR = new DecimalFormatSymbols(new Locale("pt", "BR"));
 
             // Configura o formatador
             DecimalFormat formatador = new DecimalFormat("#,##0.00");
             formatador.setDecimalFormatSymbols(regiaoBR);
 
             this.valor = formatador.parse(valor).toString();
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             this.valor = "0";
         }
     }
@@ -72,34 +72,12 @@ public class AnuncioDTO implements Serializable {
         this.descricao = descricao;
     }
 
-    public List<Long> getFotosId() {
-        return fotosId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFotosId(List<Long> fotosId) {
-        this.fotosId = fotosId;
-    }
-
-    public Long getThumbnailId() {
-        return thumbnailId;
-    }
-
-    public void setThumbnailId(Long thumbnailId) {
-        this.thumbnailId = thumbnailId;
-    }
-
-    public StatusAnuncio getStatusAnuncio() {
-        return statusAnuncio;
-    }
-
-    public void setStatusAnuncio(StatusAnuncio statusAnuncio) {
-        this.statusAnuncio = statusAnuncio;
-    }
-
-    @Override
-    public String toString() {
-        return "AnuncioDTO [titulo=" + titulo + ", valor=" + valor + ", descricao=" + descricao + ", fotosId=" + fotosId
-                + ", thumbnailId=" + thumbnailId + ", statusAnuncio=" + statusAnuncio + "]";
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

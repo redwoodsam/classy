@@ -1,112 +1,49 @@
-const botoesApagar = Array.from(document.getElementsByClassName("editar-anuncio-imagem-apagar-btn"));
-const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
 const galeriaContainer = document.getElementById("galeria-container");
 const uploadInputWrapper = document.getElementById("upload-wrapper");
 const uploadInput = document.getElementById("editar-anuncio-upload-input");
-const thumbnailContainers = Array.from(document.getElementsByClassName('anuncio-imagem-thumbnail-wrapper'));
 const thumbnailInput = document.getElementById("editar-anuncio-thumbnail");
-const visualizacaoImagem = document.getElementById("img-principal");
-const valorInput = document.getElementById("valor-input");
+const formulario = document.getElementById("novo-anuncio-form");
 
-const ID_ANUNCIO = window.location.pathname.split("/")[2];
 const UPLOAD_URL = `upload/`;
-const FOTO_URL = `fotos/`
+const FOTO_URL = `fotos/`;
+const ANUNCIOS_URL = `${window.location.origin}/anuncios`;
 
 let thumbnailEscolhida = null;
 
-// Configura a funcionalidade do botão de apagar imagem
-botoesApagar.map(botao => {
-    botao.addEventListener("click", (e) => {
-        let id = e.target.id.split("-")[1];
-        let thumbnail = anuncioThumbnails.filter(thumb => thumb.id == id)[0].parentNode;
-
-        deleteData(`${FOTO_URL}${id}`)
-            .then(async response => {
-                if(response.status !== 204) {
-                    console.log("Erro ao apagar foto - ", await response.json())
-                } else {
-                    thumbnail.removeEventListener("mouseenter", () => {}, true);
-                    thumbnail.removeEventListener("mouseleave", () => {}, true);
-                    galeriaContainer.removeChild(thumbnail);
-                }
-        });
-        
-        // Ao apagar imagem no servidor, remove da lista de thumbnails.
-        let indiceFotoApagada = anuncioThumbnails.findIndex(thumb => thumb.id == id);
-        anuncioThumbnails.splice(indiceFotoApagada, 1);
-
-        // Caso não haja mais imagens no anúncio, seta a thumbnail para o número zero, indicando sem imagem.
-        if(anuncioThumbnails.length < 1) {
-            thumbnailInput.value = 0;
-        }
-
-    });
-})
-
-thumbnailContainers.map(container => {
-    container.addEventListener("mouseenter", (e) => {
-        const botaoFechar = e.target.childNodes[1];
-        if(!botaoFechar.classList.contains("btn-ativo")) {
-            botaoFechar.classList.add("btn-ativo");
-        }
-    })
-
-    container.addEventListener("mouseleave", (e) => {
-        const botaoFechar = e.target.childNodes[1];
-        if(botaoFechar.classList.contains("btn-ativo")) {
-            botaoFechar.classList.remove("btn-ativo");
-        }
-    })
-});
-
-// Configura a seleção da imagem principal.
-anuncioThumbnails.map(thumb => {
-    thumb.addEventListener("click", (e) => {
-        const imagemClicada = anuncioThumbnails.filter(thumb => e.target.id === thumb.id)[0];
-        anuncioThumbnails.forEach(thumb => {
-            if(thumb.classList.contains("anuncio-imagem-ativa")) {
-                thumb.classList.remove("anuncio-imagem-ativa");
-            }
-        });
-
-        if(!imagemClicada.classList.contains("anuncio-imagem-ativa")) {
-            imagemClicada.classList.add("anuncio-imagem-ativa");
-            thumbnailInput.value = imagemClicada.id;
-        }
-        
-    });
-});
-
-uploadInput.addEventListener("change", async (e) => {
-
-    let novaImagemWrapper = document.createElement("div");
-    novaImagemWrapper.className = "anuncio-imagem-thumbnail-wrapper";
-
-    // Adiciona o ícone de carregamento enquanto a imagem não é preenchida
-    let spinner = document.createElement("span");
-    spinner.className = "spinner-border";
-    spinner.setAttribute("role", "status");
-    novaImagemWrapper.appendChild(spinner);
+uploadInput.addEventListener("change", (e) => {
     
-    galeriaContainer.insertBefore(novaImagemWrapper, uploadInputWrapper);
+    let imagens = Array.from(uploadInput.files);
 
-    postData(UPLOAD_URL, uploadInput.files[0])
-        .then(async (response) => {
-            let respostaJson = await response.json();
+    if(imagens.length > 0 && imagens.length <= 6) {
+        const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
+        const thumbnailContainers = Array.from(document.getElementsByClassName('anuncio-imagem-thumbnail-wrapper'));
 
-            // Remove o spinner de carregamento
+        imagens.forEach((imagem, indice) => {
+
+            let novaImagemWrapper = document.createElement("div");
+            novaImagemWrapper.className = "anuncio-imagem-thumbnail-wrapper";
+    
+            // Adiciona o ícone de carregamento enquanto a imagem não é preenchida
+            let spinner = document.createElement("span");
+            spinner.className = "spinner-border";
+            spinner.setAttribute("role", "status");
+            novaImagemWrapper.appendChild(spinner);
+            
+            galeriaContainer.insertBefore(novaImagemWrapper, uploadInputWrapper);
+
             novaImagemWrapper.removeChild(spinner);
 
             // Adicionando botão de remover
             let novoBotao = document.createElement("button");
+            novoBotao.type = "button"
             novoBotao.className = "btn btn-close editar-anuncio-imagem-apagar-btn";
-            novoBotao.id = `btn-${respostaJson.id}`;
+            novoBotao.id = `btn-${indice}`;
 
             // Adicionando nova imagem
             let novaImagem = document.createElement("img");
-            novaImagem.src = await respostaJson.path;
+            novaImagem.src = URL.createObjectURL(imagem);
             novaImagem.className = "anuncio-imagem-thumbnail me-2";
-            novaImagem.id = respostaJson.id;
+            novaImagem.id = indice;
             
             novaImagemWrapper.appendChild(novoBotao);
             novaImagemWrapper.appendChild(novaImagem);
@@ -132,30 +69,47 @@ uploadInput.addEventListener("change", async (e) => {
         
                 if(!novaImagem.classList.contains("anuncio-imagem-ativa")) {
                     novaImagem.classList.add("anuncio-imagem-ativa");
-                    thumbnailInput.value = novaImagem.id;
+                    thumbnailInput.value = indice;
                 }
-                
-            });
+            })
 
             novoBotao.addEventListener("click", (e) => {
-                let id = respostaJson.id;
-                
-                if(anuncioThumbnails.length <= 1) {
-                    thumbnailInput.value = null;
+                let id = indice;
+
+                // Caso não haja mais imagens no anúncio, seta a thumbnail para o número zero, indicando sem imagem.
+                if(anuncioThumbnails.length < 1) {
+                    thumbnailInput.value = 0;
                 }
+        
+                novaImagem.removeEventListener("mouseenter", () => {}, true);
+                novaImagem.removeEventListener("mouseleave", () => {}, true);
+                galeriaContainer.removeChild(novaImagemWrapper);
                 
-                deleteData(`${FOTO_URL}${id}`)
-                .then(async response => {
-                    if(response.status !== 204) {
-                        console.log("Erro ao apagar foto - ", await response.json())
-                    } else {
-                        thumbnail.removeEventListener("mouseenter", () => {}, true);
-                        thumbnail.removeEventListener("mouseleave", () => {}, true);
-                        galeriaContainer.removeChild(novaImagemWrapper);
-                    }
-                })
-            });
+                // Ao apagar imagem no servidor, remove da lista de thumbnails.
+                let indiceFotoApagada = anuncioThumbnails.findIndex(thumb => thumb.id == id);
+                anuncioThumbnails.splice(indiceFotoApagada, 1);
         });
+        })
+    }
+});
+
+// TODO: COMPLETAR A IMPLEMENTAÇÃO DA CRIAÇÃO DO ANÚNCIO, ATUALMENTE O FORM DATA NÃO ESTÁ CONSEGUINDO PEGAR OS CAMPOS DO FORMULÁRIO.
+formulario.addEventListener("submit", (e) => {
+    const dados = new FormData(e.target);
+    console.log(e.target)
+
+    console.log(dados);
+
+    postDados(ANUNCIOS_URL, dados)
+        .then(async (response) => {
+            const resposta = await response.json();
+            if(response.status != 201) {
+                console.log(`Falha ao salvar anúncio: ${resposta.body}`)
+            }
+            console.log(resposta)
+        });
+
+    e.preventDefault();
 });
 
 // Envia uma requisição DELETE ao servidor de uma URL
@@ -167,7 +121,17 @@ async function deleteData(url) {
 }
 
 // Envia um arquivo ao servidor de uma URL com uma requisição POST
-async function postData(url, data) {
+async function postDados(url, data) {
+  
+    return await fetch(url, {
+      method: 'POST',
+      body: data,
+      credentials: "same-origin",
+    });
+}
+
+// Envia um arquivo ao servidor de uma URL com uma requisição POST
+async function postArquivo(url, data) {
     const formData  = new FormData();
 
     formData.append("file", data);
@@ -177,5 +141,4 @@ async function postData(url, data) {
       body: formData,
       credentials: "same-origin"
     });
-  
-  }
+}

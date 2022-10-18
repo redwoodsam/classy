@@ -1,6 +1,8 @@
 package com.samuelaraujo.classy.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -19,11 +21,14 @@ import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.FotoAnuncio;
 import com.samuelaraujo.classy.model.Thumbnail;
+import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
+import com.samuelaraujo.classy.model.dto.AnuncioRespostaDTO;
 import com.samuelaraujo.classy.model.dto.ArquivoDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
 import com.samuelaraujo.classy.repository.AnuncioRepository;
 import com.samuelaraujo.classy.util.ArquivoUtil;
+import com.samuelaraujo.classy.util.AutenticacaoUtil;
 
 @Service
 public class AnuncioService {
@@ -47,6 +52,21 @@ public class AnuncioService {
 
 	public Page<Anuncio> listarPorEmailUsuario(String email, Pageable pageable) {
 		return anuncioRepository.listarPorEmailUsuario(email, pageable);
+	}
+
+	@Transactional
+	public AnuncioRespostaDTO salvar(AnuncioDTO anuncioDTO) {
+
+		Anuncio novoAnuncio = new Anuncio();
+		novoAnuncio.setDataPublicacao(LocalDate.now());
+		novoAnuncio.setNome(anuncioDTO.getTitulo());
+		novoAnuncio.setDescricao(anuncioDTO.getDescricao());
+		novoAnuncio.setValor(novoAnuncio.getValor());
+
+		Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		novoAnuncio.setUsuario(usuarioLogado);
+
+		return new AnuncioRespostaDTO(anuncioRepository.save(novoAnuncio));
 	}
 
 	@Transactional
@@ -96,6 +116,7 @@ public class AnuncioService {
 		novaFoto.setFormato(arquivo.getContentType());
 		novaFoto.setNome(nomeModificado);
 		novaFoto.setPath(nomeModificado);
+		novaFoto.setUsuarioId(AutenticacaoUtil.obterUsuarioLogado().getId());
 
 		ArquivoDTO arquivoDto = new ArquivoDTO(anuncio.getUsuario().getId(), anuncio.getId(), nomeModificado, arquivo);
 		fileSystemService.armazenarArquivo(arquivoDto);

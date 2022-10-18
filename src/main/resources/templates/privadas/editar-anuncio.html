@@ -47,7 +47,7 @@
                             id="editar-anuncio-upload-input" 
                             name="img-upload" 
                             style="position: absolute; visibility: hidden;" 
-                            accept="images/*"
+                            accept="image/*"
                         >
                     </div>
                 </div>
@@ -57,7 +57,6 @@
                 id="editar-anuncio-thumbnail" 
                 name="thumbnailId" 
                 style="position: absolute; visibility: hidden;" 
-                accept="images/*"
                 th:if="${#lists.size(anuncio.fotos) > 0}"
                 th:value="${anuncio.thumbnail != null ? anuncio.thumbnail.thumbnailId : anuncio.fotos[0].foto.id}"
             >

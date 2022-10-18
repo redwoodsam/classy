@@ -57,21 +57,6 @@ public class MeusAnunciosController {
 		return "privadas/novo-anuncio";
 	}
 
-    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String cadastrar(@Valid AnuncioDTO anuncioDTO, BindingResult result) {
-		try {
-			if(result.hasErrors()) {
-				return "cadastro";
-			}
-
-			return "forward:/";
-		} catch (DadoInvalidoException e) {
-			ObjectError error = new ObjectError("email", e.getMessage());
-			result.addError(error);
-			return "forward:/cadastro";
-		}
-	}
-
     @ExceptionHandler(ConstraintViolationException.class)
 	public String handleErrosValidacao(HttpServletRequest request, ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
 
