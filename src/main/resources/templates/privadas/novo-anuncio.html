@@ -7,7 +7,7 @@
         th:object="${anuncioDto}"
     >
         <div th:if="${#lists.size(mensagens) > 0}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-danger p-2 px-4 m-2 rounded text-white mensagem-confirmacao" th:each="mensagem : ${mensagens}" th:text="${mensagem}"></div>
-        <form id="novo-anuncio-form" class="form-group mb-3">
+        <form id="novo-anuncio-form" enctype="multipart/form-data" class="form-group mb-3">
         <section class="d-flex flex-column p-3">
             <h3 class="h3">Detalhes do anúncio</h3>
                 <div class="d-flex align-items-center mx-auto w-100 p-2">
@@ -68,6 +68,7 @@
                             id="editar-anuncio-upload-input" 
                             style="position: absolute; visibility: hidden;" 
                             accept="image/*"
+                            name="img-upload"
                             multiple
                         >
                     </div>

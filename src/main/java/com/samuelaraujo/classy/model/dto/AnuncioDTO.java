@@ -22,7 +22,7 @@ public class AnuncioDTO implements Serializable {
     private String titulo;
 
     @NotNull(message = "O campo valor é obrigatório.")
-    private String valor;
+    private Double valor;
 
     @Lob
     @NotBlank(message = "O campo descrição é obrigatório.")
@@ -43,7 +43,7 @@ public class AnuncioDTO implements Serializable {
         this.titulo = titulo;
     }
 
-    public String getValor() {
+    public Double getValor() {
         return valor;
     }
 
@@ -58,9 +58,9 @@ public class AnuncioDTO implements Serializable {
             DecimalFormat formatador = new DecimalFormat("#,##0.00");
             formatador.setDecimalFormatSymbols(regiaoBR);
 
-            this.valor = formatador.parse(valor).toString();
+            this.valor = formatador.parse(valor).doubleValue();
         } catch(ParseException e) {
-            this.valor = "0";
+            this.valor = 0d;
         }
     }
 

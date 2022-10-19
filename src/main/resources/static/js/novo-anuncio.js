@@ -92,24 +92,47 @@ uploadInput.addEventListener("change", (e) => {
         })
     }
 });
-
 // TODO: COMPLETAR A IMPLEMENTAÇÃO DA CRIAÇÃO DO ANÚNCIO, ATUALMENTE O FORM DATA NÃO ESTÁ CONSEGUINDO PEGAR OS CAMPOS DO FORMULÁRIO.
 formulario.addEventListener("submit", (e) => {
+    e.preventDefault();
     const dados = new FormData(e.target);
-    console.log(e.target)
 
-    console.log(dados);
+    let spinner = document.createElement("span");
+    spinner.className = "spinner-border";
+    spinner.setAttribute("role", "status");
+    spinner.style = "z-index: 1;"
+
+    const telaCarregamento = document.createElement("div");
+    telaCarregamento.style = "position: absolute; width: 100%; height: 100vh, min-height: 100vh; background: rgba(0,0,0,0.7); top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 10";
+    telaCarregamento.appendChild(spinner)
+
+    document.body.appendChild(telaCarregamento);
 
     postDados(ANUNCIOS_URL, dados)
         .then(async (response) => {
             const resposta = await response.json();
             if(response.status != 201) {
-                console.log(`Falha ao salvar anúncio: ${resposta.body}`)
-            }
-            console.log(resposta)
-        });
+                mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: ${resposta.body}`, erro, 5000)
+            } else {
+                const idAnuncio = resposta.id;
+                const fotosAEnviar = Array.from(uploadInput.files);
+                const thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
+                if(fotosAEnviar.length > 0) {
+                    fotosAEnviar.forEach((foto, indice) => {
+                        postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto)
+                        .then(async (response) => {
+                            const respostaUpload = await response.json();
+                            thumbnails[indice].id = respostaUpload.id;
+                            console.log(respostaUpload)
+                        });
+                    });
 
-    e.preventDefault();
+                    // Caso sucedido, retornar à página de meus-anuncios com a mensagem de sucesso
+                    // window.location = `${window.location.origin}/meus-anuncios`;
+                }
+            }
+        });
+    
 });
 
 // Envia uma requisição DELETE ao servidor de uma URL

@@ -61,7 +61,7 @@ public class AnuncioService {
 		novoAnuncio.setDataPublicacao(LocalDate.now());
 		novoAnuncio.setNome(anuncioDTO.getTitulo());
 		novoAnuncio.setDescricao(anuncioDTO.getDescricao());
-		novoAnuncio.setValor(novoAnuncio.getValor());
+		novoAnuncio.setValor(anuncioDTO.getValor());
 
 		Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		novoAnuncio.setUsuario(usuarioLogado);
@@ -85,7 +85,7 @@ public class AnuncioService {
 
 		anuncioSave.setNome(anuncioDTO.getTitulo());
 		anuncioSave.setDescricao(anuncioDTO.getDescricao());
-		anuncioSave.setValor(Double.parseDouble(anuncioDTO.getValor()));
+		anuncioSave.setValor(anuncioDTO.getValor());
 		anuncioSave.setStatusAnuncio(anuncioDTO.getStatusAnuncio());
 
 		return anuncioRepository.save(anuncioSave);
