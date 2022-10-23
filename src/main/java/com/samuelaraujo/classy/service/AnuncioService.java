@@ -91,6 +91,7 @@ public class AnuncioService {
 		return anuncioRepository.save(anuncioSave);
 	}
 
+	// Obtém uma foto específica de um anúncio
 	public FileResponseDTO obterFoto(Long idAnuncio, String nomeFoto) {
 
 		Anuncio anuncioSave = buscarPorId(idAnuncio);
@@ -103,6 +104,7 @@ public class AnuncioService {
 		return new FileResponseDTO(fotoSave.getNome(), resource, fotoSave.getFormato());
 	}
 
+	// Realiza o upload de uma foto e a salva no anúncio.
 	@Transactional
 	public Foto salvarFoto(Long idAnuncio, MultipartFile arquivo) {
 
@@ -154,7 +156,22 @@ public class AnuncioService {
 		fotoService.apagarFotoAnuncio(idFoto);
 	}
 	
+	// Configura a thumbnail do anúncio (usada na hora de criação do anúncio)
+	@Transactional
+	public void setarThumbnail(Long idAnuncio, Long idFoto) {
+		Anuncio anuncio = buscarPorId(idAnuncio);
+		validaAutoria(anuncio);
 
+		FotoAnuncio fotoAnuncio = fotoService.buscarFotoAnuncioPorIdFoto(idFoto);
+		validaAutoriaFotoAnuncio(anuncio, fotoAnuncio);
+
+		anuncio.setThumbnail(fotoAnuncio);
+
+		anuncioRepository.save(anuncio);
+	}
+
+	// Reconfigura a thumbnail de um anúncio caso uma thumbnail seja apagada
+	// A thumbnail se torna a próxima foto da lista ou nenhuma, caso não haja mais fotos.
 	@Transactional
 	private void resetaThumbnail(Anuncio anuncio) {
 
