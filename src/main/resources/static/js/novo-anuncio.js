@@ -92,7 +92,7 @@ uploadInput.addEventListener("change", (e) => {
     }
 });
 
-formulario.addEventListener("submit", (e) => {
+formulario.addEventListener("submit", async (e) => {
     e.preventDefault();
     const dados = new FormData(e.target);
 
@@ -107,53 +107,70 @@ formulario.addEventListener("submit", (e) => {
 
     document.body.appendChild(telaCarregamento);
 
-    postDados(ANUNCIOS_URL, dados)
-        .then(async (response) => {
-            const resposta = await response.json();
-            if(response.status != 201) {
-                mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: ${resposta.body}`, 'erro', 5000)
-            } else {
-                // Caso a resposta seja bem sucedida
-                const idAnuncio = resposta.id;
-                const fotosAEnviar = Array.from(uploadInput.files);
-                const thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
+    let respostaAnuncioEnviado = await postDados(ANUNCIOS_URL, dados);
 
-                // Realizar o upload de todas as imagens que selecionamos
-                if(fotosAEnviar.length > 0) {
-                    fotosAEnviar.map((foto, indice) => {
-                        postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto)
-                        .then(async (response) => {
-                            const respostaUpload = await response.json();
-                            thumbnails[indice].id = respostaUpload.id;
-                        });
-                    });
-                }
-                const thumbnailEscolhida = document.querySelector(".anuncio-imagem-ativa");
-                if(thumbnailEscolhida == null) {
-                    thumbnailInput.value = thumbnails[0].id;
+    if(respostaAnuncioEnviado.status != 201) {
+        mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: ${resposta.body}`, 'erro', 5000)
+    } else {
+        let respostaAnuncioJson = await respostaAnuncioEnviado.json();
+
+        const idAnuncio = respostaAnuncioJson.id;
+        const fotosAEnviar = Array.from(uploadInput.files);
+        let thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
+        let thumbnailIds = [];
+
+        if(fotosAEnviar.length > 0) {
+
+            // Realiza o upload de todas as imagens que selecionamos
+            thumbnailIds = await enviarMultiplasFotos(fotosAEnviar, idAnuncio);
+
+            if(thumbnailIds.length > 0) {
+
+                console.log(thumbnailIds);
+    
+                let indiceThumbEscolhida = Array.from(thumbnails).findIndex(thumb => thumb.classList.contains("anuncio-imagem-ativa"));
+    
+                if(indiceThumbEscolhida == null || indiceThumbEscolhida == -1) {
+                    console.log(thumbnails[0]);
+                    thumbnailInput.value = thumbnailIds[0];
                 } else {
-                    thumbnailInput.value = thumbnailEscolhida.id;
+                    console.log(thumbnailIds[0]);
+                    thumbnailInput.value = thumbnailIds[indiceThumbEscolhida];
                 }
-                
+    
+    
                 const thumbnailId = new FormData();
                 thumbnailId.append("thumbnailId", thumbnailInput.value);
-
-                postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId)
-                    .then(async (resposta) => {
-                        if(resposta.status !== 204) {
-                            mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: Falha ao salvar thumbnail`, 'erro', 5000)
-                        } else {
-                            document.body.removeChild(telaCarregamento);
-                            mostrarToast(document.querySelector("main") , `Anúncio salvo com sucesso`, 'sucesso', 5000);
-
-                            setTimeout(() => {
-                                window.location = `${window.location.origin}/meus-anuncios`;
-                            }, 5000);
-                        }
-                    });
+            
+                let envioThumbnail = await postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId);
+                
+                if(envioThumbnail.status != 204) {
+                    mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: Falha ao salvar thumbnail`, 'erro', 5000)
+                } else {
+    
+                    document.body.removeChild(telaCarregamento);
+                    mostrarToast(document.querySelector("main") , `Anúncio salvo com sucesso`, 'sucesso', 5000);
+    
+                    setTimeout(() => {
+                        window.location = `${window.location.origin}/meus-anuncios`;
+                    }, 5000);
+                }
             }
-        });
+        }
+    }
 });
+    
+
+async function enviarMultiplasFotos(fotosAEnviar, idAnuncio) {
+    let resultados = [];
+    await fotosAEnviar.forEach(async (foto, indice) => {
+        let fotoEnviada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
+        let respostaUpload = await fotoEnviada.json();
+        resultados.push(respostaUpload.id);
+    });
+
+    return resultados;
+}
 
 // Envia um arquivo ao servidor de uma URL com uma requisição POST
 async function postDados(url, data) {
