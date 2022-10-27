@@ -34,6 +34,7 @@ import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.model.dto.AnuncioRespostaDTO;
+import com.samuelaraujo.classy.model.dto.EnvioThumbnailDTO;
 import com.samuelaraujo.classy.model.dto.FileResponseDTO;
 import com.samuelaraujo.classy.service.AnuncioService;
 import com.samuelaraujo.classy.service.UsuarioService;
@@ -105,10 +106,10 @@ public class AnuncioController {
 	}
 
 	@PostMapping("/{id}/thumbnail")
-	public ResponseEntity<?> atualizaThumbnail(@PathVariable Long id, Map<String, Long> thumbnail) {
+	public ResponseEntity<?> atualizaThumbnail(@PathVariable Long id, @Valid EnvioThumbnailDTO thumbnail) {
 		
-		System.out.println(thumbnail.get("thumbnailId"));
-		anuncioService.setarThumbnail(id, thumbnail.get("thumbnailId"));
+		System.out.println(thumbnail.getThumbnailId());
+		anuncioService.setarThumbnail(id, thumbnail.getThumbnailId());
 
 		return ResponseEntity.noContent().build();
 	}

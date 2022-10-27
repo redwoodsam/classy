@@ -8,14 +8,13 @@ const UPLOAD_URL = `upload/`;
 const FOTO_URL = `fotos/`;
 const ANUNCIOS_URL = `${window.location.origin}/anuncios`;
 
+let thumbnailIds = [];
 
 uploadInput.addEventListener("change", (e) => {
     
     let imagens = Array.from(uploadInput.files);
 
     if(imagens.length > 0 && imagens.length <= 6) {
-        const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
-        const thumbnailContainers = Array.from(document.getElementsByClassName('anuncio-imagem-thumbnail-wrapper'));
 
         imagens.forEach((imagem, indice) => {
 
@@ -60,21 +59,24 @@ uploadInput.addEventListener("change", (e) => {
             });
 
             novaImagem.addEventListener("click", (e) => {
+                const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
                 anuncioThumbnails.forEach(thumb => {
                     if(thumb.classList.contains("anuncio-imagem-ativa")) {
                         thumb.classList.remove("anuncio-imagem-ativa");
                     }
                 });
-        
+                console.log(thumbnailIds);
                 if(!novaImagem.classList.contains("anuncio-imagem-ativa")) {
                     novaImagem.classList.add("anuncio-imagem-ativa");
                     thumbnailInput.value = indice;
                 }
+
             })
 
             novoBotao.addEventListener("click", (e) => {
+                const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
+                console.log(thumbnailIds);
                 let id = indice;
-
                 // Caso não haja mais imagens no anúncio, seta a thumbnail para o número zero, indicando sem imagem.
                 if(anuncioThumbnails.length < 1) {
                     thumbnailInput.value = 0;
@@ -87,6 +89,11 @@ uploadInput.addEventListener("change", (e) => {
                 // Ao apagar imagem no servidor, remove da lista de thumbnails.
                 let indiceFotoApagada = anuncioThumbnails.findIndex(thumb => thumb.id == id);
                 anuncioThumbnails.splice(indiceFotoApagada, 1);
+                thumbnailIds.splice(indiceFotoApagada, 1);
+                removeArquivoDoInput(indiceFotoApagada);
+
+                console.log(thumbnailIds);
+
         });
         })
     }
@@ -102,7 +109,7 @@ formulario.addEventListener("submit", async (e) => {
     spinner.style = "z-index: 10; color: green;"
 
     const telaCarregamento = document.createElement("div");
-    telaCarregamento.style = "position: absolute; width: 100%; min-height: 100%; background: rgba(0,0,0,0.7); top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 1";
+    telaCarregamento.style = "position: absolute; width: 100%; min-height: 100%; background: rgba(0,0,0,0.7); top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1";
     telaCarregamento.appendChild(spinner)
 
     document.body.appendChild(telaCarregamento);
@@ -110,67 +117,95 @@ formulario.addEventListener("submit", async (e) => {
     let respostaAnuncioEnviado = await postDados(ANUNCIOS_URL, dados);
 
     if(respostaAnuncioEnviado.status != 201) {
-        mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: ${resposta.body}`, 'erro', 5000)
+        mostrarToast(document.querySelector("form") , `Falha ao salvar anúncio: ${resposta.body}`, 'erro', 5000)
     } else {
         let respostaAnuncioJson = await respostaAnuncioEnviado.json();
 
         const idAnuncio = respostaAnuncioJson.id;
         const fotosAEnviar = Array.from(uploadInput.files);
         let thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
-        let thumbnailIds = [];
 
         if(fotosAEnviar.length > 0) {
 
             // Realiza o upload de todas as imagens que selecionamos
-            thumbnailIds = await enviarMultiplasFotos(fotosAEnviar, idAnuncio);
+            for(const foto of fotosAEnviar) {
+                let fotoUpada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
+                let respostaUpload = await fotoUpada.json();
+                thumbnailIds.push(respostaUpload.id);
+            }
 
+            
             if(thumbnailIds.length > 0) {
 
-                console.log(thumbnailIds);
-    
                 let indiceThumbEscolhida = Array.from(thumbnails).findIndex(thumb => thumb.classList.contains("anuncio-imagem-ativa"));
     
                 if(indiceThumbEscolhida == null || indiceThumbEscolhida == -1) {
-                    console.log(thumbnails[0]);
                     thumbnailInput.value = thumbnailIds[0];
                 } else {
-                    console.log(thumbnailIds[0]);
                     thumbnailInput.value = thumbnailIds[indiceThumbEscolhida];
                 }
-    
-    
+
                 const thumbnailId = new FormData();
                 thumbnailId.append("thumbnailId", thumbnailInput.value);
             
                 let envioThumbnail = await postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId);
                 
                 if(envioThumbnail.status != 204) {
-                    mostrarToast(document.querySelector("main") , `Falha ao salvar anúncio: Falha ao salvar thumbnail`, 'erro', 5000)
+                    mostrarToast(document.querySelector("form") , `Falha ao salvar anúncio: Falha ao salvar thumbnail`, 'erro', 5000)
                 } else {
-    
-                    document.body.removeChild(telaCarregamento);
-                    mostrarToast(document.querySelector("main") , `Anúncio salvo com sucesso`, 'sucesso', 5000);
-    
+                    let divSucesso = criarMensagemDeSucesso();
+
+                    telaCarregamento.removeChild(spinner);
+                    telaCarregamento.appendChild(divSucesso);
+
                     setTimeout(() => {
                         window.location = `${window.location.origin}/meus-anuncios`;
-                    }, 5000);
+                    }, 3000);
                 }
             }
+        } else {
+            let divSucesso = criarMensagemDeSucesso();
+            telaCarregamento.remove(spinner);
+            telaCarregamento.appendChild(divSucesso);
+
+            setTimeout(() => {
+                window.location = `${window.location.origin}/meus-anuncios`;
+            }, 3000);
         }
     }
 });
     
+function criarMensagemDeSucesso() {
+    let divSucesso = document.createElement("div");
+    divSucesso.style = "display: flex; flex-direction: column; color: white; z-index: 11;";
 
-async function enviarMultiplasFotos(fotosAEnviar, idAnuncio) {
-    let resultados = [];
-    await fotosAEnviar.forEach(async (foto, indice) => {
-        let fotoEnviada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
-        let respostaUpload = await fotoEnviada.json();
-        resultados.push(respostaUpload.id);
-    });
+    let iconeSucesso = document.createElement("i");
+    iconeSucesso.className = "bi bi-check-circle-fill";
+    iconeSucesso.style = "width: 20px; color: light-green;";
 
-    return resultados;
+    let textoSucesso = document.createElement("p");
+    textoSucesso.value = "Anúncio criado com sucesso!";
+    textoSucesso.style = "font-size: 18px; font-weight: bold;";
+
+    divSucesso.appendChild(iconeSucesso);
+    divSucesso.appendChild(textoSucesso);
+    return divSucesso;
 }
+
+// Remove arquivos do input de upload (usado quando apagamos uma imagem)
+const removeArquivoDoInput = (indiceArquivo) => {
+    const dt = new DataTransfer()
+    const uploadInput = document.getElementById('files')
+    const { arquivos } = uploadInput
+    
+    for (let i = 0; i < arquivos.length; i++) {
+      const arquivo = arquivos[i]
+      if (indiceArquivo !== i)
+        dt.items.add(arquivo);
+    }
+    
+    input.files = dt.files;
+  }
 
 // Envia um arquivo ao servidor de uma URL com uma requisição POST
 async function postDados(url, data) {

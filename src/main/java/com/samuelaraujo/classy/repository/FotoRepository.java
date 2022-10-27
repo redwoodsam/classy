@@ -16,7 +16,7 @@ public interface FotoRepository extends JpaRepository<Foto, Long> {
     @Query("select f from Foto f where f.nome=:nome")
     public Optional<Foto> buscarPorNome(String nome);
 
-    @Query("select fa from FotoAnuncio fa where fa.id=:idFoto")
+    @Query("select fa from FotoAnuncio fa where fa.foto.id=:idFoto")
     public Optional<FotoAnuncio> buscarFotoAnuncioPorIdFoto(Long idFoto);
 
     @Modifying
