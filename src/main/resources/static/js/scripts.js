@@ -10,7 +10,7 @@ const mostrarToast = (pai, mensagem, tipo, duracao) => {
 
     toastCorpo.appendChild(texto)
     toast.className = `mensagem-confirmacao d-flex rounded border justify-content-center border-dark p-3 align-items-center bg-${cor} text-light fw-bold`;
-    toast.style = "position: absolute; height: 70px; width: 200px; top: 0; right: 0;"
+    toast.style = "position: fixed; top: 0; right: 0; margin: 1px; min-height: 70px; width: 250px; text-align: center;"
     toast.appendChild(toastCorpo)
 
     pai.appendChild(toast)

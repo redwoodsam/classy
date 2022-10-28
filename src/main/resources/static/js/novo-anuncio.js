@@ -9,14 +9,17 @@ const FOTO_URL = `fotos/`;
 const ANUNCIOS_URL = `${window.location.origin}/anuncios`;
 
 let thumbnailIds = [];
+let imagensAdicionadas = [];
 
 uploadInput.addEventListener("change", (e) => {
     
     let imagens = Array.from(uploadInput.files);
 
     if(imagens.length > 0 && imagens.length <= 6) {
-
+        
         imagens.forEach((imagem, indice) => {
+            
+            imagensAdicionadas = [...imagensAdicionadas, imagem];
 
             let novaImagemWrapper = document.createElement("div");
             novaImagemWrapper.className = "anuncio-imagem-thumbnail-wrapper";
@@ -75,7 +78,7 @@ uploadInput.addEventListener("change", (e) => {
 
             novoBotao.addEventListener("click", (e) => {
                 const anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
-                console.log(thumbnailIds);
+
                 let id = indice;
                 // Caso não haja mais imagens no anúncio, seta a thumbnail para o número zero, indicando sem imagem.
                 if(anuncioThumbnails.length < 1) {
@@ -88,11 +91,9 @@ uploadInput.addEventListener("change", (e) => {
                 
                 // Ao apagar imagem no servidor, remove da lista de thumbnails.
                 let indiceFotoApagada = anuncioThumbnails.findIndex(thumb => thumb.id == id);
+                imagensAdicionadas.splice(indiceFotoApagada, 1);
                 anuncioThumbnails.splice(indiceFotoApagada, 1);
                 thumbnailIds.splice(indiceFotoApagada, 1);
-                removeArquivoDoInput(indiceFotoApagada);
-
-                console.log(thumbnailIds);
 
         });
         })
@@ -116,22 +117,24 @@ formulario.addEventListener("submit", async (e) => {
 
     let respostaAnuncioEnviado = await postDados(ANUNCIOS_URL, dados);
 
-    if(respostaAnuncioEnviado.status != 201) {
-        mostrarToast(document.querySelector("form") , `Falha ao salvar anúncio: ${resposta.body}`, 'erro', 5000)
+    if(!respostaAnuncioEnviado.ok) {
+        document.body.removeChild(telaCarregamento);
+        mostrarToast(document.querySelector("form") , `Todos os campos são obrigatórios`, 'erro', 5000);
     } else {
         let respostaAnuncioJson = await respostaAnuncioEnviado.json();
 
         const idAnuncio = respostaAnuncioJson.id;
-        const fotosAEnviar = Array.from(uploadInput.files);
         let thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
 
-        if(fotosAEnviar.length > 0) {
+        if(imagensAdicionadas.length > 0) {
 
             // Realiza o upload de todas as imagens que selecionamos
-            for(const foto of fotosAEnviar) {
+            for(const foto of imagensAdicionadas) {
                 let fotoUpada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
-                let respostaUpload = await fotoUpada.json();
-                thumbnailIds.push(respostaUpload.id);
+                if(fotoUpada.ok) {
+                    let respostaUpload = await fotoUpada.json();
+                    thumbnailIds.push(respostaUpload.id);
+                }
             }
 
             
@@ -150,8 +153,8 @@ formulario.addEventListener("submit", async (e) => {
             
                 let envioThumbnail = await postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId);
                 
-                if(envioThumbnail.status != 204) {
-                    mostrarToast(document.querySelector("form") , `Falha ao salvar anúncio: Falha ao salvar thumbnail`, 'erro', 5000)
+                if(!envioThumbnail.ok) {
+                    mostrarToast(document.querySelector("form") , `Falha ao salvar thumbnail`, 'erro', 5000)
                 } else {
                     let divSucesso = criarMensagemDeSucesso();
 
@@ -177,35 +180,20 @@ formulario.addEventListener("submit", async (e) => {
     
 function criarMensagemDeSucesso() {
     let divSucesso = document.createElement("div");
-    divSucesso.style = "display: flex; flex-direction: column; color: white; z-index: 11;";
+    divSucesso.style = "display: flex; flex-direction: column; width: 100%; align-items: center; color: white; z-index: 11;";
 
     let iconeSucesso = document.createElement("i");
     iconeSucesso.className = "bi bi-check-circle-fill";
-    iconeSucesso.style = "width: 20px; color: light-green;";
+    iconeSucesso.style = "font-size: 8rem; color: #1C7C54;";
 
     let textoSucesso = document.createElement("p");
-    textoSucesso.value = "Anúncio criado com sucesso!";
-    textoSucesso.style = "font-size: 18px; font-weight: bold;";
+    textoSucesso.textContent = "Anúncio criado com sucesso!";
+    textoSucesso.style = "font-size: 2rem; color: white; font-weight: bold;";
 
     divSucesso.appendChild(iconeSucesso);
     divSucesso.appendChild(textoSucesso);
     return divSucesso;
 }
-
-// Remove arquivos do input de upload (usado quando apagamos uma imagem)
-const removeArquivoDoInput = (indiceArquivo) => {
-    const dt = new DataTransfer()
-    const uploadInput = document.getElementById('files')
-    const { arquivos } = uploadInput
-    
-    for (let i = 0; i < arquivos.length; i++) {
-      const arquivo = arquivos[i]
-      if (indiceArquivo !== i)
-        dt.items.add(arquivo);
-    }
-    
-    input.files = dt.files;
-  }
 
 // Envia um arquivo ao servidor de uma URL com uma requisição POST
 async function postDados(url, data) {

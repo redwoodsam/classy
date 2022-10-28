@@ -108,7 +108,6 @@ public class AnuncioController {
 	@PostMapping("/{id}/thumbnail")
 	public ResponseEntity<?> atualizaThumbnail(@PathVariable Long id, @Valid EnvioThumbnailDTO thumbnail) {
 		
-		System.out.println(thumbnail.getThumbnailId());
 		anuncioService.setarThumbnail(id, thumbnail.getThumbnailId());
 
 		return ResponseEntity.noContent().build();
