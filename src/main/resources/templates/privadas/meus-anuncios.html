@@ -19,11 +19,11 @@
                 <th scope="col">Data de criação</th>
                 <th scope="col">Ações</th>
             </thead>
-            <tbody th:each="anuncio : ${anuncios}">
-                <tr>
+            <tbody>
+                <tr th:each="anuncio : ${anuncios}">
                     <td>
                         <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
-                            <img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" src="https://placehold.jp/8c8c8c/ffffff/150x150.png?text=Sem%20imagem" th:alt="${anuncio.nome}">
+                            <img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" src="https://placehold.jp/8c8c8c/ffffff/230x150.png?text=Sem%20imagem" th:alt="${anuncio.nome}">
                             <img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.fotos[0].foto.nome}" th:alt="${anuncio.nome}">
                             <img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}" th:alt="${anuncio.nome}">
                         </a>
@@ -46,7 +46,7 @@
                     <td class="align-middle">
                         <div class="d-flex justify-items-start">
                             <a class="anuncio-wrapper-link" style="width: 1rem;" th:href="${'anuncios/' + anuncio.id + '/edit'}"><i class="bi bi-pencil-fill"></i></a>
-                            <a class="anuncio-wrapper-link ms-2" style="width: 1rem;" th:href="${'anuncios/' + anuncio.id + '/delete'}"><i class="bi bi-trash3-fill"></i></a>
+                            <button th:id="${anuncio.id}" class="anuncio-delete-button ms-2" style="width: 1rem;"><i class="bi bi-trash3-fill"></i></button>
                         </div>
                     </td>
                 </tr>
@@ -60,6 +60,7 @@
             </a>
         </div>
     </section>
+    <script type="text/javascript" th:src="@{/js/meus-anuncios.js}" ></script>
     <script>
         const mensagem = document.querySelector(".mensagem-confirmacao");
 

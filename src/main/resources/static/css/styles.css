@@ -213,6 +213,14 @@ ul, li {
 	min-height: 100%;
 }
 
+.anuncio-delete-button:hover {
+	color: var(--dark-green);
+}
+
+.anuncio-delete-button {
+	border: none;
+}
+
 /* Página Editar anúncio */
 .editar-anuncio-thumbnail {
 	max-height: 20vw;

@@ -17,6 +17,7 @@ let thumbnailEscolhida = null;
 // Configura a funcionalidade do botão de apagar imagem
 botoesApagar.map(botao => {
     botao.addEventListener("click", (e) => {
+        e.preventDefault();
         let id = e.target.id.split("-")[1];
         let thumbnail = anuncioThumbnails.filter(thumb => thumb.id == id)[0].parentNode;
 
@@ -39,7 +40,6 @@ botoesApagar.map(botao => {
         if(anuncioThumbnails.length < 1) {
             thumbnailInput.value = 0;
         }
-
     });
 })
 
