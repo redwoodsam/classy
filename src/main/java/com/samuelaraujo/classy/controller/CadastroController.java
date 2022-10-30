@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.model.Usuario;
@@ -29,18 +30,20 @@ public class CadastroController {
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String cadastrar(@Valid CadastroDto cadastroDto, BindingResult result) {
+	public String cadastrar(@Valid CadastroDto cadastroDto, BindingResult result, RedirectAttributes redirectAttributes) {
 		try {
-			Usuario usuarioCadastrado = usuarioService.cadastrar(cadastroDto);
+			usuarioService.cadastrar(cadastroDto);
 			if(result.hasErrors()) {
 				return "cadastro";
 			}
 
-			return "forward:/";
+			redirectAttributes.addFlashAttribute("mensagem", "Sua conta foi criada com sucesso");
+			return "redirect:/login";
+
 		} catch (DadoInvalidoException e) {
 			ObjectError error = new ObjectError("email", e.getMessage());
 			result.addError(error);
-			return "forward:/cadastro";
+			return "cadastro";
 		}
 	}
 	

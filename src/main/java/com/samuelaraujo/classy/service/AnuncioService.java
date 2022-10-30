@@ -42,12 +42,21 @@ public class AnuncioService {
 	@Autowired
 	private FileSystemService fileSystemService;
 	
-	public List<Anuncio> listarTodos() {
-		return anuncioRepository.findAll();
+	public Page<Anuncio> listarTodos(Pageable pageable) {
+		return anuncioRepository.findAll(pageable);
 	}
 	
 	public Anuncio buscarPorId(Long id) {
 		return anuncioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Anúncio não encontrado"));
+	}
+
+	public Page<Anuncio> buscaAnuncioUsuario(String busca, Pageable pageable) {
+		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
+		return anuncioRepository.buscaAnuncioUsuario(usuarioLogado.getDadosPessoais().getEmail(), busca, pageable);
+	}
+
+	public Page<Anuncio> buscaAnuncio(String busca, Pageable pageable) {
+		return anuncioRepository.buscaAnuncio(busca, pageable);
 	}
 
 	public Page<Anuncio> listarPorEmailUsuario(String email, Pageable pageable) {
@@ -95,7 +104,7 @@ public class AnuncioService {
 	public FileResponseDTO obterFoto(Long idAnuncio, String nomeFoto) {
 
 		Anuncio anuncioSave = buscarPorId(idAnuncio);
-		Foto fotoSave = fotoService.buscarPorNome(nomeFoto);
+		Foto fotoSave = fotoService.buscarPorNome(nomeFoto.toString());
 
 		ArquivoDTO arquivoDTO = new ArquivoDTO(anuncioSave.getUsuario().getId(), anuncioSave.getId(), fotoSave.getNome());
 
@@ -156,6 +165,21 @@ public class AnuncioService {
 		fotoService.apagarFotoAnuncio(idFoto);
 	}
 	
+	// Apaga anúncio
+	@Transactional
+	public void apagarAnuncio(Long idAnuncio) {
+		Anuncio anuncioSalvo = buscarPorId(idAnuncio);
+		validaAutoria(anuncioSalvo);
+
+		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
+
+		ArquivoDTO arquivoDTO = new ArquivoDTO(usuarioLogado.getId(), anuncioSalvo.getId());
+
+		fileSystemService.excluirPastaAnuncio(arquivoDTO);
+
+		anuncioRepository.delete(anuncioSalvo);
+	}
+
 	// Configura a thumbnail do anúncio (usada na hora de criação do anúncio)
 	@Transactional
 	public void setarThumbnail(Long idAnuncio, Long idFoto) {

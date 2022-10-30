@@ -13,7 +13,7 @@
 		<img 
 			class="carousel-active-image d-flex"
 			th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}"
-			th:src="${anuncio.thumbnail == null ? anuncio.fotos[0].foto.path : ''}" 
+			th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail == null ? anuncio.fotos[0].foto.path : ''}" 
 			th:alt="${anuncio.thumbnail == null ? anuncio.fotos[0].foto.nome : ''}"
 		>
 		<img 

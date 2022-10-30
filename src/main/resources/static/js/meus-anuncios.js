@@ -6,38 +6,42 @@ const ANUNCIOS_URL = `${window.location.origin}/anuncios`;
 botoesDelete.forEach(botao => {
     botao.addEventListener("click", async (e) => {
         let idAnuncio = e.target.parentNode.id;
-        let deleteUrl = `${ANUNCIOS_URL}/${idAnuncio}/delete`
+        let deleteUrl = `${ANUNCIOS_URL}/${idAnuncio}`
         
         let confirmado = window.confirm(`Você tem certeza que deseja apagar o anúncio?`);
+
         if(confirmado) {
-            // const anuncioApagado = await deleteData(deleteUrl);
-            // if(!anuncioApagado.ok) {
-            //     mostrarToast(document.querySelector("form") , `Falha ao apagar anúncio: ${anuncioApagado.text}`, 'erro', 5000)
-            // } else {
-            //     mostrarMensagemSucesso();
-            // }
-            mostrarMensagemSucesso();
+
+            const anuncioApagado = await deleteData(deleteUrl);
+
+            if(!anuncioApagado.ok) {
+                let respostaJson = await anuncioApagado.json();
+                mostrarToast(document.querySelector("table") , `Falha ao apagar anúncio: ${respostaJson.error}`, 'erro', 5000)
+            } else {
+                let tbody = document.querySelector("tbody");
+
+                let linha = e.target
+                .parentNode     // a
+                .parentNode     // div
+                .parentNode     // td
+                .parentNode;    // tr
+            
+                tbody.removeChild(linha);
+
+                if(tbody.children.length == 0) {
+                    let novaLinha = document.createElement("tr");
+                    let novoTd = document.createElement("td");
+                    novoTd.className = "text-center";
+                    novoTd.colSpan = 5;
+
+                    let textoTd = document.createTextNode("Você ainda não possui anúncios publicados.")
+
+                    novoTd.appendChild(textoTd);
+                    novaLinha.appendChild(novoTd);
+                }
+
+                mostrarToast(document.querySelector("table") , `Anúncio apagado com sucesso`, 'sucesso', 5000)
+            }
         }
     })
 });
-
-// Mostra mensagem de sucesso
-function mostrarMensagemSucesso() {
-    let divMensagem = document.createElement("div");
-    divMensagem.className = "mensagem-confirmacao border border-dark d-flex mx-auto bg-success p-2 px-4 m-3 rounded text-white";
-    divMensagem.textContent = "Anúncio apagado com sucesso"
-
-    wrapperAnuncios.prepend(divMensagem);
-
-    setTimeout(() => {
-        wrapperAnuncios.removeChild(divMensagem);
-    }, 5000);
-}
-
-// Envia uma requisição DELETE ao servidor de uma URL
-async function deleteData(url) {
-    return await fetch(url, {
-        method: 'DELETE',
-        credentials: "same-origin"
-    });
-}

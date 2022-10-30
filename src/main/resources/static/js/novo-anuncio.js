@@ -110,7 +110,7 @@ formulario.addEventListener("submit", async (e) => {
     spinner.style = "z-index: 10; color: green;"
 
     const telaCarregamento = document.createElement("div");
-    telaCarregamento.style = "position: absolute; width: 100%; min-height: 100%; background: rgba(0,0,0,0.7); top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1";
+    telaCarregamento.style = "position: absolute; width: 100%; min-height: 100%; background: rgba(0,0,0,0.7); top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9";
     telaCarregamento.appendChild(spinner)
 
     document.body.appendChild(telaCarregamento);

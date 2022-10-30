@@ -14,4 +14,11 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long>{
     @Query("select a from Anuncio a join a.usuario u where u.dadosPessoais.email = :email")
     public Page<Anuncio> listarPorEmailUsuario(String email, Pageable pageable);
 
+    @Query("select a from Anuncio a where Upper(a.nome) like CONCAT('%', Upper(:busca), '%')")
+    public Page<Anuncio> buscaAnuncio(String busca, Pageable pageable);
+
+    @Query("select a from Anuncio a join a.usuario u where u.dadosPessoais.email = :email "
+     + "and Upper(a.nome) like CONCAT('%', Upper(:busca), '%')")
+    public Page<Anuncio> buscaAnuncioUsuario(String email, String busca, Pageable pageable);
+
 }

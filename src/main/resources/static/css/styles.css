@@ -25,6 +25,10 @@ body {
 	--darker-green: #1B512D;
 }
 
+a {
+	text-decoration: none !important;
+}
+
 ul, li {
 	position:relative;
 	padding: 0;
@@ -49,9 +53,18 @@ ul, li {
 }
 
 .footer {
-	background-color: var(--dark-green)
+	color: var(--darker-green);
 }
 
+.setas-paginacao {
+	color: var(--dark-green);
+	font-size: 1.5rem;
+	padding: 0 0.5rem;
+}
+
+.setas-paginacao:hover {
+	color: var(--darker-green);
+}
 
 /* P�gina de An�ncio */
 
@@ -63,6 +76,7 @@ ul, li {
 	background-color: var(--dark-green);
 	border: 1px solid black;
 	border-radius: 10px;
+	min-height: 100vh;
 }
 
 .anuncio-completo-wrapper {
@@ -275,6 +289,10 @@ ul, li {
 	font-size: 3rem;
 }
 
+.form-minha-conta-wrapper {
+	min-height: 100%;
+}
+
 @keyframes aparecer {
 	0% { opacity: 0%; }
 	25% { opacity: 25%; }
@@ -284,4 +302,26 @@ ul, li {
 
 .mensagem-confirmacao {
 	animation: aparecer 0.2s;
+}
+
+.form-minha-conta-campo {
+	margin: 0.5rem 0;
+	text-align: left;
+}
+
+#footer-social-links-wrapper {
+	position: absolute;
+	right: 1rem;
+}
+
+#footer-copyright {
+	color: var(--dark-green);
+}
+
+.footer-social-links{
+	color: var(--dark-green);
+} 
+
+.footer-social-links:hover{
+	color: var(--darker-green);
 }

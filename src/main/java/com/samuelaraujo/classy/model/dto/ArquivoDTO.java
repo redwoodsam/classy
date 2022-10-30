@@ -10,7 +10,9 @@ public class ArquivoDTO {
     private String nomeModificado;
     private String contentType;
 
-    public ArquivoDTO() {
+    public ArquivoDTO(Long usuarioId, Long anuncioId) {
+        this.usuarioId = usuarioId.toString();
+        this.anuncioId = anuncioId.toString();
     }
 
     public ArquivoDTO(Long usuarioId, Long anuncioId, String nomeModificado) {

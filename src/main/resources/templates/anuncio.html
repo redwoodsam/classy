@@ -22,7 +22,10 @@
 						</div>
 						<div class="anuncio-detalhes-vendedor border border-dark rounded p-2 w-100">
 							<h4 class="h4">Localização:</h4>
-							<ul class="anuncio-detalhes-vendedor-body list-group text-start p-2">
+							<ul 
+								th:if="${not #strings.isEmpty(anuncio.usuario.dadosPessoais.endereco)}" 
+								class="anuncio-detalhes-vendedor-body list-group text-start p-2"
+							>
 								<li>
 									<span th:text="${'Bairro: ' + anuncio.usuario.dadosPessoais.endereco.bairro}"></span>
 								</li>
@@ -31,11 +34,19 @@
 									<span th:text="${'Estado: ' + anuncio.usuario.dadosPessoais.endereco.uf}"></span>
 								</li>
 							</ul>
+							<ul 
+								th:if="${#strings.isEmpty(anuncio.usuario.dadosPessoais.endereco)}" 
+								class="anuncio-detalhes-vendedor-body list-group text-start p-2"
+							>
+								<li>
+									<span th:text="${'Não informado'}"></span>
+								</li>
+							</ul>
 						</div>
 						<div class="anuncio-detalhes-vendedor border border-dark rounded p-2 w-100">
 							<h4 class="h4">Contato:</h4>
 							<ul class="anuncio-detalhes-vendedor-body list-group text-start p-2">
-								<li>
+								<li th:if="${anuncio.usuario.dadosPessoais.telefone != null}">
 									<span th:text="${'Telefone: ' + anuncio.usuario.dadosPessoais.telefone}"></span>
 								</li>
 								<li>

@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<header th:replace="~{ base :: header }"/>
+		<div th:if="${mensagem}" th:text="${mensagem}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-success p-2 px-4 m-3 rounded text-white"></div>
 		<div class="form-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
 			<h3>Entre com sua conta</h3>
 			<div th:if="${param.error}" style="color:red">Login ou senha incorretos.</div>
@@ -25,5 +26,15 @@
 			<p class="mt-3">Não possui uma conta? <a th:href="@{/cadastro}" class="text-success">Cadastre-se agora!</a></p>
 		</div>
 		<footer th:replace="~{ base :: footer }"/>
+		<script>
+			const mensagem = document.querySelector(".mensagem-confirmacao");
+	
+			if(mensagem) {
+				setTimeout(() => {
+					const paiMensagem = mensagem.parentNode;
+					paiMensagem.removeChild(mensagem);
+				}, 5000);
+			}
+		</script>
 	</body>
 </html>

@@ -13,9 +13,7 @@ public class LoginController {
 
 	@GetMapping
 	public String login(Model model) {
-		if(!UsuarioService.isAuthenticated()) {
-			return "login";
-		}
+		if(!UsuarioService.isAuthenticated()) return "login";
 		
 		return "redirect:/";
 	}

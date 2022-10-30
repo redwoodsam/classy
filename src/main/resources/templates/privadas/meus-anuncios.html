@@ -6,10 +6,10 @@
         <h3 class="h3">Meus anúncios</h3>
         <div class="container d-flex my-2">
             <a th:href="@{/meus-anuncios/novo}" class="btn btn-outline-success">Novo</a>
-            <div class="input-group h-3 mx-3">
-                <input type="text" class="form-control" placeholder="Pesquisar um anúncio">
-                <button class="btn btn-success">Pesquisar</button>
-            </div>
+            <form class="input-group h-3 mx-3" th:action="@{/meus-anuncios/busca}">
+                <input id="pesquisa-anuncio" type="text" class="form-control" name="q" placeholder="Pesquisar um anúncio">
+                <button id="pesquisa-anuncio-btn" type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
         </div>
         <table class="table table-hover">
             <thead>
@@ -20,6 +20,11 @@
                 <th scope="col">Ações</th>
             </thead>
             <tbody>
+                <tr>
+                    <td colspan="5" class="text-center" th:if="${#lists.size(anuncios.content) == 0}">
+                        Você ainda não possui anúncios publicados.
+                    </td>
+                </tr>
                 <tr th:each="anuncio : ${anuncios}">
                     <td>
                         <a class="anuncio-wrapper-link" th:href="${'anuncios/' + anuncio.id}">
@@ -53,11 +58,18 @@
             </tbody>
         </table>
     </main>
-    <section class="d-flex w-100 p-3" th:each="page : ${anuncios.totalPages}">
-        <div class="mx-auto">
-            <a th:href="@{/meus-anuncios?page=} + ${page - 1}">
-                <button class="btn btn-outline-success" th:text="${page}"></button>
+    <section class="d-flex w-100 p-3">
+        <div class="d-flex mx-auto align-items-center">
+            <a class="setas-paginacao" th:if="${anuncios.number > 0}" th:href="@{/meus-anuncios?page=} + ${anuncios.number - 1}"><i class="bi bi-chevron-left"></i></a>
+            <a th:if="${anuncios.totalPages < 9}" th:each="pagina : ${#numbers.sequence(anuncios.number, anuncios.totalPages)}" th:unless="${pagina < 1}" th:href="@{/meus-anuncios?page=} + ${pagina - 1}">
+                <button class="btn btn-success" th:if="${(pagina - 1) == anuncios.number}" th:text="${pagina}"></button>
+                <button class="btn btn-outline-success" th:if="${(pagina - 1) != anuncios.number}" th:text="${pagina}"></button>
             </a>
+            <a th:if="${anuncios.totalPages > 10}" th:each="pagina : ${#numbers.sequence(anuncios.number, anuncios.number + 9)}" th:href="@{/meus-anuncios?page=} + ${pagina - 1}">
+                <button class="btn btn-success" th:if="${(pagina - 1) == anuncios.number}" th:text="${pagina}"></button>
+                <button class="btn btn-outline-success" th:if="${(pagina - 1) != anuncios.number}" th:text="${pagina}"></button>
+            </a>
+            <a class="setas-paginacao" th:if="${anuncios.number < anuncios.totalPages && anuncios.totalPages > 1}" th:href="@{/meus-anuncios?page=} + ${anuncios.number + 1}"><i class="bi bi-chevron-right"></i></a>
         </div>
     </section>
     <script type="text/javascript" th:src="@{/js/meus-anuncios.js}" ></script>

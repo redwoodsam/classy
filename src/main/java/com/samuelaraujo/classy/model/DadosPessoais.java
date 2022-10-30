@@ -16,6 +16,7 @@ public class DadosPessoais implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotBlank
+	@Column(nullable = false)
 	private String nome;
 
 	private String sobrenome;

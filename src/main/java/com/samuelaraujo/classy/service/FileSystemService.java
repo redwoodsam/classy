@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -122,6 +123,24 @@ public class FileSystemService {
 			Files.deleteIfExists(pastaUsuario.toPath().resolve(arquivoDTO.getNomeModificado()));
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Erro ao apagar arquivo: %s", e.getMessage()));
+		}
+	}
+
+	// Apaga toda a pasta do anúncio
+	public void excluirPastaAnuncio(ArquivoDTO arquivoDTO) {
+		Path pathArquivos = Paths.get(diretorioArquivos);
+		Path pathUsuario = Paths.get(arquivoDTO.getUsuarioId());
+		Path pathAnuncio = Paths.get(arquivoDTO.getAnuncioId());
+		File pastaUsuario = new File(pathArquivos.resolve(pathUsuario).resolve(pathAnuncio).toString());
+
+		if (!pastaUsuario.exists()) {
+			pastaUsuario.mkdir();
+		}
+
+		try {
+			FileUtils.deleteDirectory(pastaUsuario);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Erro ao apagar pasta do anúncio: %s", e.getMessage()));
 		}
 	}
 

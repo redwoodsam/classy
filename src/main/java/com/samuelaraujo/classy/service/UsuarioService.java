@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -22,7 +23,9 @@ import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.DadosPessoais;
 import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.CadastroDto;
+import com.samuelaraujo.classy.model.dto.ContaUsuarioDTO;
 import com.samuelaraujo.classy.repository.UsuarioRepository;
+import com.samuelaraujo.classy.util.AutenticacaoUtil;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -71,6 +74,42 @@ public class UsuarioService implements UserDetailsService {
 
 	}
 
+	@Transactional
+	public ContaUsuarioDTO atualizar(ContaUsuarioDTO contaUsuarioDTO) {
+		Usuario contaSalva = buscarPorId(contaUsuarioDTO.getId());
+
+		validarSenhas(contaUsuarioDTO.getSenha(), contaUsuarioDTO.getSenha2());
+		validarNomeCompleto(contaUsuarioDTO);
+
+		if(contaUsuarioDTO.getSenha().isEmpty()) {
+			contaUsuarioDTO.setSenha(contaSalva.getPassword());
+		} else {
+			contaUsuarioDTO.setSenha(passwordEncoder.encode(contaUsuarioDTO.getSenha()));
+		}
+		
+		BeanUtils.copyProperties(contaUsuarioDTO.obterUsuario(), contaSalva, "id", "authorities", "anuncios", "email");
+
+		return new ContaUsuarioDTO(usuarioRepository.save(contaSalva));
+	}
+
+	private void validarNomeCompleto(ContaUsuarioDTO contaUsuarioDTO) {
+		if(contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco() == null) {
+			throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
+		}
+
+		if(
+			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getEndereco().isEmpty() ||
+			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getBairro().isEmpty() ||
+			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getCidade().isEmpty()
+		) {
+			throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
+		}
+
+		if(contaUsuarioDTO.getNomeCompleto().trim().isEmpty()) {
+			throw new DadoInvalidoException("O campo nome é obrigatório");
+		}
+	}
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return usuarioRepository.buscarPorEmail(username)
@@ -83,6 +122,13 @@ public class UsuarioService implements UserDetailsService {
 			return false;
 		}
 		return authentication.isAuthenticated();
+	}
+
+	public boolean informacoesCompletas() {
+		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
+		Usuario informacoesUsuarioLogado = buscarPorId(usuarioLogado.getId());
+
+		return informacoesUsuarioLogado.getDadosPessoais().getEndereco() != null;
 	}
 
 	private void validarSenhas(String senha, String senha2) {

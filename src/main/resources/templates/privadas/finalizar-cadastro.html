@@ -4,25 +4,13 @@
     <div class="form-minha-conta-wrapper d-flex flex-column border border-success rounded w-75 mx-auto p-4 my-3 text-center">
         <div th:if="${erro}" th:text="${erro}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-danger p-2 px-4 m-3 rounded text-white"></div>
         <div th:if="${mensagem}" th:text="${mensagem}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-success p-2 px-4 m-3 rounded text-white"></div>
-        <h3>Minha conta</h3>
-        <form id="form-cadastro" th:object="${usuario}" th:action="@{/minha-conta}" method="post">
+        <h3>Complete suas informações</h3>
+        <form id="form-cadastro" th:object="${usuario}" th:action="@{/minha-conta/finalizar-cadastro}" method="post">
             
             <div class="d-flex flex-column border border-success p-3 rounded w-50 mx-auto">
                 <div class="form-minha-conta-campo form-group">
-                    <label for="nomeCompleto">Nome Completo:</label>
-                    <input class="form-control" type="text" th:field="*{nomeCompleto}" placeholder="Digite o seu nome completo" >
-                </div>
-                <div class="form-minha-conta-campo form-group">
                     <label for="telefone">Telefone:</label>
                     <input class="form-control" type="number" th:field="*{telefone}" placeholder="Digite o seu telefone">
-                </div>
-                <div class="form-minha-conta-campo form-group">
-                    <label for="password">Senha:</label>
-                    <input class="form-control" type="password" th:field="*{senha}" minlength="8" placeholder="Digite a sua senha">
-                </div>
-                <div class="form-minha-conta-campo form-group">
-                    <label for="password2">Confirme sua senha:</label>
-                    <input class="form-control" type="password" th:field="*{senha2}" minlength="8" placeholder="Confirme sua senha">
                 </div>
             </div>
             
@@ -95,6 +83,7 @@
             </div>
             <input type="hidden" name="id" th:value="${usuario.id}">
             <input type="hidden" name="email" th:value="${usuario.email}">
+            <input type="hidden" name="nomeCompleto" th:value="${usuario.nomeCompleto}">
         </form>
     </div>
     <script>

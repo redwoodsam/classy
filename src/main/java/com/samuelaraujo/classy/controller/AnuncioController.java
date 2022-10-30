@@ -1,7 +1,6 @@
 package com.samuelaraujo.classy.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
+import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.model.dto.AnuncioRespostaDTO;
 import com.samuelaraujo.classy.model.dto.EnvioThumbnailDTO;
@@ -45,15 +45,29 @@ public class AnuncioController {
 
 	@Autowired
 	private AnuncioService anuncioService;
+
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	@GetMapping("/{id}")
 	public String anuncio(@PathVariable Long id, Model model) {
-		
+		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
 		Anuncio anuncio = anuncioService.buscarPorId(id);
 		
 		model.addAttribute("anuncio", anuncio);
 		return "anuncio";
 	}
+
+	@GetMapping("busca")
+    public String pesquisaAnuncios(@RequestParam("q") String pesquisa, Model model, Pageable pageable) {
+
+		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
+
+        Page<Anuncio> anuncios = anuncioService.buscaAnuncio(pesquisa, pageable);
+        model.addAttribute("anuncios", anuncios);
+
+        return "home";
+    }
 
 	@PostMapping
 	public ResponseEntity<?> cadastrar(@Valid AnuncioDTO anuncioDTO, BindingResult result) {
@@ -75,6 +89,7 @@ public class AnuncioController {
 	public String anuncioEdit(@PathVariable Long id, Model model) {
 		
 		if(!UsuarioService.isAuthenticated()) return "redirect:/login";
+		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
 		Anuncio anuncioSave = anuncioService.buscarPorId(id);
 
 		model.addAttribute("anuncio", anuncioSave);
@@ -123,10 +138,19 @@ public class AnuncioController {
 			.build();
 	}
 
+	@DeleteMapping("/{idAnuncio}")
+	public ResponseEntity<?> apagarAnuncio(@PathVariable Long idAnuncio) {
+		
+		anuncioService.apagarAnuncio(idAnuncio);
+
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
 	@GetMapping("/{idAnuncio}/{nomeFoto}")
 	public ResponseEntity<Resource> downloadImagem(@PathVariable Long idAnuncio, @PathVariable String nomeFoto) {
-		
-		FileResponseDTO foto = anuncioService.obterFoto(idAnuncio, nomeFoto);
+		FileResponseDTO foto = anuncioService.obterFoto(idAnuncio, nomeFoto.toString());
 
 		return ResponseEntity
 			.ok()

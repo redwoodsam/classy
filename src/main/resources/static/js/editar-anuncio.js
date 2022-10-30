@@ -158,13 +158,6 @@ uploadInput.addEventListener("change", async (e) => {
         });
 });
 
-// Envia uma requisição DELETE ao servidor de uma URL
-async function deleteData(url) {
-    return await fetch(url, {
-        method: 'DELETE',
-        credentials: "same-origin"
-    });
-}
 
 // Envia um arquivo ao servidor de uma URL com uma requisição POST
 async function postData(url, data) {

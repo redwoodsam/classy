@@ -48,7 +48,7 @@ public class Anuncio implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Usuario usuario;
 
-	@OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FotoAnuncio> fotos = new ArrayList<>();
 
 	@Embedded

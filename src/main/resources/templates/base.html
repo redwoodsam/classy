@@ -14,10 +14,16 @@
 	<span id="logo"><a th:href="@{/}">Classy</a></span>
 </div>
 
-<header th:fragment="header" class="header navbar navbar-expand d-flex flex-column py-0">
+<header th:fragment="header" class="header navbar navbar-expand d-flex flex-column py-0 border-bottom">
 	<ul class="navbar-nav w-100 justify-content-between align-items-center align-text-center px-3 py-1">
 		<li class="nav-item">
-			<div th:replace="~{base :: logo}"></div>
+			<div class="d-flex align-items-center w-100">
+				<div th:replace="~{base :: logo}"></div>
+				<form class="input-group ms-4 home-caixa-pesquisa" th:action="@{/anuncios/busca}">
+					<input id="pesquisa-anuncio" type="text" class="form-control border" name="q" placeholder="Pesquisar um anúncio">
+					<button id="pesquisa-anuncio-btn" type="submit" class="btn btn-success px-4"><i class="bi bi-search"></i></button>
+				</form>
+			</div>
 		</li>
 		<li class="nav-item d-flex">
 			<a class="btn btn-outline-success" sec:authorize="!isAuthenticated()" th:href="@{/login}">Anuncie já</a>
@@ -26,13 +32,7 @@
 			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
 		</li>
 	</ul>
-	<nav class="navbar navbar-expand bg-success px-2  w-100" th:fragment="navbar" >
-		<ul class="navbar-nav">
-			<li class="nav-item">
-				<a class="nav-text nav-link" th:href="@{/}">Home</a>
-			</li>
-		</ul>
-	</nav>
+	
 </header>
 
 <div th:fragment="toast-erro(mensagem)" class="toast bg-danger" style="position: absolute; top: 0; right: 0;" role="alert" aria-live="assertive" aria-atomic="true">
@@ -43,6 +43,12 @@
 	<div class="toast-body" th:text="${mensagem}"></div>
 </div>
 
-<footer th:fragment="footer" class="footer d-flex container-fluid p-3 text-white justify-content-around align-items-center">
-	<p class="m-0 text-white">Criado por Samuel Araújo @ 2022</p>
+<footer th:fragment="footer" class="footer d-flex container-fluid p-3 border-top justify-content-around align-items-center">
+	<div class="d-flex align-items-center w-100">
+		<p id="footer-copyright" class="m-0 mx-auto">Criado por Samuel Araújo @ 2022</p>
+		<div id="footer-social-links-wrapper">
+			<a class="footer-social-links" href="https://www.linkedin.com/in/arausam" target="_blank"><i class="bi bi-linkedin fs-4"></i></a>
+			<a class="footer-social-links ms-2" href="https://www.github.com/redwoodsam" target="_blank"><i class="bi bi-github fs-4"></i></a>
+		</div>
+	</div>
 </footer>

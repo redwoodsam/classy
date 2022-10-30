@@ -7,13 +7,17 @@
 			<div class="row anuncio container p-3 m-0 mb-2">
 				<a class="col-12 row anuncio-wrapper-link m-0" th:href="${'anuncios/' + anuncio.id}">
 					<div class="col-2 d-flex">
-						<img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail" style="max-width: 130px;" src="https://placehold.jp/8c8c8c/ffffff/120x80.png?text=Sem%20imagem" alt="Sem imagem">
-						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}" style="max-width: 130px;" class="img-fluid img-thumbnail meus-anuncios-table-thumbnail w-10" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.fotos[0].foto.nome}" th:alt="${anuncio.nome}">
-						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}" style="max-width: 130px;" class="img-fluid img-thumbnail" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}" th:alt="${anuncio.nome}">
+						<img th:if="${#lists.size(anuncio.fotos) == 0}" class="img-fluid img-thumbnail" style="width: 130px; height: 90px;" src="https://placehold.jp/8c8c8c/ffffff/120x80.png?text=Sem%20imagem" alt="Sem imagem">
+						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail == null}" style="width: 130px; height: 90px;" class="img-fluid img-thumbnail" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.fotos[0].foto.nome}" th:alt="${anuncio.nome}">
+						<img th:if="${#lists.size(anuncio.fotos) > 0 && anuncio.thumbnail != null}" style="width: 130px; height: 90px;" class="img-fluid img-thumbnail" th:src="@{/anuncios/} + ${anuncio.id} + '/' + ${anuncio.thumbnail.thumbnailNome}" th:alt="${anuncio.nome}">
 					</div>
 					<div class="col-8 d-flex flex-column">
 							<span th:text="${anuncio.nome}"></span>
-							<span class="text-secondary" th:text="${anuncio.usuario.dadosPessoais.endereco.bairro + ' - ' + anuncio.usuario.dadosPessoais.endereco.cidade + ' - ' + anuncio.usuario.dadosPessoais.endereco.uf}"></span>
+							<span 
+								class="text-secondary" 
+								th:if="${not #strings.isEmpty(anuncio.usuario.dadosPessoais.endereco)}"
+								th:text="${anuncio.usuario.dadosPessoais.endereco.bairro + ' - ' + anuncio.usuario.dadosPessoais.endereco.cidade + ' - ' + anuncio.usuario.dadosPessoais.endereco.uf}"
+							></span>
 							<div class="mt-auto">
 								<span class="text-secondary" th:text="${#temporals.format(anuncio.dataPublicacao, 'dd/MM/yyyy')}"></span>
 							</div>
