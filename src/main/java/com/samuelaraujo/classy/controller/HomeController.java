@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.service.AnuncioService;
@@ -29,6 +31,17 @@ public class HomeController {
 		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
 		
 		Page<Anuncio> anuncios = anuncioService.listarTodos(pageable);
+		model.addAttribute("anuncios", anuncios);
+		
+		return "home";
+	}
+
+	@GetMapping("/{slug}")
+	public String homeCategorizada(@PathVariable String slug, Model model, Pageable pageable) {
+		
+		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
+		
+		Page<Anuncio> anuncios = anuncioService.listarTodosPorCategoria(slug, pageable);
 		model.addAttribute("anuncios", anuncios);
 		
 		return "home";

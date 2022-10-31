@@ -10,19 +10,28 @@
         <form id="novo-anuncio-form" enctype="multipart/form-data" class="form-group mb-3">
         <section class="d-flex flex-column p-3">
             <h3 class="h3">Detalhes do anúncio</h3>
-                <div class="d-flex align-items-center mx-auto w-100 p-2">
-                    <label for="titulo">Título:</label>
-                    <input 
-                        class="form-control ms-2" 
-                        type="text" 
-                        th:field="*{titulo}" 
-                        name="titulo" 
-                        style="width: 50%;"
-                        th:errorclass="is-invalid"
-                        placeholder='Digite um título. Ex: TV 40" 4K'
-                    >
-                    <div class="invalid-feedback" th:each="error : ${#fields.errors('titulo')}" th:text="${error}"></div>
-                    <div class="d-flex align-items-center ms-2 p-2">
+                <div class="row">
+                    <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-5">
+                        <label for="titulo">Título:</label>
+                        <input 
+                            class="form-control ms-2" 
+                            type="text" 
+                            th:field="*{titulo}" 
+                            name="titulo" 
+                            placeholder='Digite um título. Ex: TV 40" 4K'
+                        >
+                    </div>
+                    <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-4">
+                        <label for="categoria">Categoria:</label>
+                        <select class="form-select ms-2" name="categoria" id="categoria">
+                            <option 
+                                th:each="categoria : ${categorias}" 
+                                th:value="${categoria.slug}" 
+                                th:text="${categoria.nome}"
+                            ></option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-3">
                         <label for="valor">Valor:</label>
                         <div class="input-group ms-2">
                             <span class="input-group-text">R$</span>
@@ -33,28 +42,23 @@
                                 type="text" 
                                 th:field="*{valor}"
                                 name="valor"
-                                th:errorclass="is-invalid"
                                 placeholder="Ex: 2,99"
                             >
-                            <div class="invalid-feedback" th:each="error : ${#fields.errors('valor')}" th:text="${error}"></div>
-                            <div th:if:"${#fields.errors('global')}">
-                                <div class="erro-global text-danger" th:each="error : ${#fields.errors('global')}" th:text="${error}"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column align-items-start p-2 py-0">
-                    <label for="descricao">Descrição:</label>
-                    <textarea 
-                        class="form-control anuncio-descricao-campo" 
-                        type="text" 
-                        th:field="*{descricao}" 
-                        name="descricao"
-                        th:errorclass="is-invalid"
-                        placeholder="Conte-nos uma breve descrição do seu produto."
-                    >
-                    </textarea>
-                    <div class="invalid-feedback" th:each="error : ${#fields.errors('descricao')}" th:text="${error}"></div>
+                <div class="row">
+                    <div class="d-flex flex-column align-items-start px-2 col-12">
+                        <label for="descricao">Descrição:</label>
+                        <textarea 
+                            class="form-control anuncio-descricao-campo" 
+                            type="text" 
+                            th:field="*{descricao}" 
+                            name="descricao"
+                            placeholder="Conte-nos uma breve descrição do seu produto."
+                        >
+                        </textarea>
+                    </div>
                 </div>
                 <h3 class="h3 mt-3">Galeria</h3>
                 <div id="galeria-container" class="d-flex flex-wrap mx-auto">

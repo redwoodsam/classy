@@ -68,7 +68,6 @@ uploadInput.addEventListener("change", (e) => {
                         thumb.classList.remove("anuncio-imagem-ativa");
                     }
                 });
-                console.log(thumbnailIds);
                 if(!novaImagem.classList.contains("anuncio-imagem-ativa")) {
                     novaImagem.classList.add("anuncio-imagem-ativa");
                     thumbnailInput.value = indice;
@@ -119,62 +118,82 @@ formulario.addEventListener("submit", async (e) => {
 
     if(!respostaAnuncioEnviado.ok) {
         document.body.removeChild(telaCarregamento);
-        mostrarToast(document.querySelector("form") , `Todos os campos são obrigatórios`, 'erro', 5000);
-    } else {
-        let respostaAnuncioJson = await respostaAnuncioEnviado.json();
+        let mensagem = "";
 
-        const idAnuncio = respostaAnuncioJson.id;
-        let thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
-
-        if(imagensAdicionadas.length > 0) {
-
-            // Realiza o upload de todas as imagens que selecionamos
-            for(const foto of imagensAdicionadas) {
-                let fotoUpada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
-                if(fotoUpada.ok) {
-                    let respostaUpload = await fotoUpada.json();
-                    thumbnailIds.push(respostaUpload.id);
-                }
-            }
-
+        switch(respostaAnuncioEnviado.status) {
+            case 409:
+                mensagem = await respostaAnuncioEnviado.text();
+                break;
             
-            if(thumbnailIds.length > 0) {
+            case 405:
+                mensagem = "Todos os campos são obrigatórios";
+                break
 
-                let indiceThumbEscolhida = Array.from(thumbnails).findIndex(thumb => thumb.classList.contains("anuncio-imagem-ativa"));
-    
-                if(indiceThumbEscolhida == null || indiceThumbEscolhida == -1) {
-                    thumbnailInput.value = thumbnailIds[0];
-                } else {
-                    thumbnailInput.value = thumbnailIds[indiceThumbEscolhida];
-                }
-
-                const thumbnailId = new FormData();
-                thumbnailId.append("thumbnailId", thumbnailInput.value);
-            
-                let envioThumbnail = await postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId);
-                
-                if(!envioThumbnail.ok) {
-                    mostrarToast(document.querySelector("form") , `Falha ao salvar thumbnail`, 'erro', 5000)
-                } else {
-                    let divSucesso = criarMensagemDeSucesso();
-
-                    telaCarregamento.removeChild(spinner);
-                    telaCarregamento.appendChild(divSucesso);
-
-                    setTimeout(() => {
-                        window.location = `${window.location.origin}/meus-anuncios`;
-                    }, 3000);
-                }
-            }
-        } else {
-            let divSucesso = criarMensagemDeSucesso();
-            telaCarregamento.remove(spinner);
-            telaCarregamento.appendChild(divSucesso);
-
-            setTimeout(() => {
-                window.location = `${window.location.origin}/meus-anuncios`;
-            }, 3000);
+            default:
+                mensagem = await respostaAnuncioEnviado.text();
         }
+
+        mostrarToast(document.querySelector("form") , `${mensagem}`, 'erro', 5000);
+    } else {
+        try {
+            let respostaAnuncioJson = await respostaAnuncioEnviado.json();
+
+            const idAnuncio = respostaAnuncioJson.id;
+            let thumbnails = document.querySelectorAll(".anuncio-imagem-thumbnail");
+    
+            if(imagensAdicionadas.length > 0) {
+    
+                // Realiza o upload de todas as imagens que selecionamos
+                for(const foto of imagensAdicionadas) {
+                    let fotoUpada = await postArquivo(`${ANUNCIOS_URL}/${idAnuncio}/upload`, foto);
+                    if(fotoUpada.ok) {
+                        let respostaUpload = await fotoUpada.json();
+                        thumbnailIds.push(respostaUpload.id);
+                    }
+                }
+                
+                if(thumbnailIds.length > 0) {
+    
+                    let indiceThumbEscolhida = Array.from(thumbnails).findIndex(thumb => thumb.classList.contains("anuncio-imagem-ativa"));
+        
+                    if(indiceThumbEscolhida == null || indiceThumbEscolhida == -1) {
+                        thumbnailInput.value = thumbnailIds[0];
+                    } else {
+                        thumbnailInput.value = thumbnailIds[indiceThumbEscolhida];
+                    }
+    
+                    const thumbnailId = new FormData();
+                    thumbnailId.append("thumbnailId", thumbnailInput.value);
+                
+                    let envioThumbnail = await postDados(`${ANUNCIOS_URL}/${idAnuncio}/thumbnail`, thumbnailId);
+                    
+                    if(!envioThumbnail.ok) {
+                        mostrarToast(document.querySelector("form") , `Falha ao salvar thumbnail`, 'erro', 5000)
+                    } else {
+                        let divSucesso = criarMensagemDeSucesso();
+    
+                        telaCarregamento.removeChild(spinner);
+                        telaCarregamento.appendChild(divSucesso);
+    
+                        setTimeout(() => {
+                            window.location = `${window.location.origin}/meus-anuncios`;
+                        }, 3000);
+                    }
+                }
+            } else {
+                let divSucesso = criarMensagemDeSucesso();
+                telaCarregamento.remove(spinner);
+                telaCarregamento.appendChild(divSucesso);
+    
+                setTimeout(() => {
+                    window.location = `${window.location.origin}/meus-anuncios`;
+                }, 3000);
+            }
+        } catch(e) {
+            document.body.removeChild(telaCarregamento);
+            mostrarToast(document.querySelector("form") , `Todos os campos são obrigatórios`, 'erro', 5000);
+        }
+
     }
 });
     

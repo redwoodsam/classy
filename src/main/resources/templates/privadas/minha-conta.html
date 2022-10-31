@@ -32,7 +32,13 @@
                     <div class="container row">
                         <div class="form-minha-conta-campo form-group col-9">
                             <label for="endereco">Endereço:</label>
-                            <input class="form-control" type="text" th:field="*{endereco}" placeholder="Ex: Rua das Palmeiras">
+                            <input 
+                                class="form-control" 
+                                type="text" 
+                                th:field="*{endereco}" 
+                                placeholder="Ex: Rua das Palmeiras"
+                                onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))"
+                            >
                         </div>
                         <div class="form-minha-conta-campo form-group col-3">
                             <label for="numero">Número:</label>

@@ -6,20 +6,51 @@
         <form class="form-group mb-3" th:action="@{/anuncios/} + ${anuncio.id} + @{/edit}" method="post">
         <section class="d-flex flex-column p-3">
             <h3 class="h3">Detalhes do anúncio</h3>
-                <div class="d-flex align-items-center mx-auto w-100 p-2">
+            <div class="row">
+                <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-4">
                     <label for="titulo">Título:</label>
-                    <input class="form-control ms-2" type="text" th:value="${anuncio.nome}"  name="titulo" style="width: 50%;">
-                    <div class="d-flex align-items-center ms-2 p-2">
-                        <label for="valor">Valor:</label>
-                        <div class="input-group ms-2">
-                            <span class="input-group-text">R$</span>
-                            <input id="valor-input" onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))" class="form-control" type="text" th:value="${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2,'COMMA')}"  name="valor">
-                        </div>
+                    <input 
+                        class="form-control ms-2" 
+                        type="text" 
+                        th:value="${anuncio.nome}"  
+                        name="titulo" 
+                    >
+                </div>
+                <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-4">
+                    <label for="categoria">Categoria:</label>
+                    <select class="form-select ms-2" name="categoria" id="categoria">
+                        <option 
+                            th:each="categoria : ${categorias}" 
+                            th:value="${categoria.slug}" 
+                            th:text="${categoria.nome}"
+                        ></option>
+                    </select>
+                </div>
+                <div class="d-flex align-items-center p-2 col-sm-12 col-md-6 col-lg-4">
+                    <label for="valor">Valor:</label>
+                    <div class="input-group ms-2">
+                        <span class="input-group-text">R$</span>
+                        <input 
+                            id="valor-input" 
+                            onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))" 
+                            class="form-control" 
+                            type="text" 
+                            th:value="${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2,'COMMA')}"  
+                            name="valor"
+                        >
                     </div>
                 </div>
-                <div class="d-flex flex-column align-items-start p-2 py-0">
-                    <label for="descricao">Descrição:</label>
-                    <textarea class="form-control anuncio-descricao-campo" type="text" th:text="${anuncio.descricao}" name="descricao"></textarea>
+            </div>
+                <div class="row">
+                    <div class="d-flex flex-column align-items-start px-2 py-0">
+                        <label for="descricao">Descrição:</label>
+                        <textarea 
+                            class="form-control anuncio-descricao-campo" 
+                            type="text"
+                            th:text="${anuncio.descricao}" 
+                            name="descricao"
+                        ></textarea>
+                    </div>
                 </div>
                 <h3 class="h3 mt-3">Galeria</h3>
                 <div id="galeria-container" class="d-flex flex-wrap mx-auto">

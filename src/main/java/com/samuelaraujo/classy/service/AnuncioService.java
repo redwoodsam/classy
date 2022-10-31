@@ -18,6 +18,7 @@ import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.exception.NaoAutorizadoException;
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
 import com.samuelaraujo.classy.model.Anuncio;
+import com.samuelaraujo.classy.model.Categoria;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.FotoAnuncio;
 import com.samuelaraujo.classy.model.Thumbnail;
@@ -40,10 +41,17 @@ public class AnuncioService {
 	private FotoService fotoService;
 
 	@Autowired
+	private CategoriaService categoriaService;
+
+	@Autowired
 	private FileSystemService fileSystemService;
 	
 	public Page<Anuncio> listarTodos(Pageable pageable) {
 		return anuncioRepository.findAll(pageable);
+	}
+
+	public Page<Anuncio> listarTodosPorCategoria(String slugCategoria, Pageable pageable) {
+		return anuncioRepository.listarPorCategoria(slugCategoria, pageable);
 	}
 	
 	public Anuncio buscarPorId(Long id) {
@@ -66,11 +74,14 @@ public class AnuncioService {
 	@Transactional
 	public AnuncioRespostaDTO salvar(AnuncioDTO anuncioDTO) {
 
+		Categoria categoria = categoriaService.buscarPorSlug(anuncioDTO.getCategoria());
+
 		Anuncio novoAnuncio = new Anuncio();
 		novoAnuncio.setDataPublicacao(LocalDate.now());
 		novoAnuncio.setNome(anuncioDTO.getTitulo());
 		novoAnuncio.setDescricao(anuncioDTO.getDescricao());
 		novoAnuncio.setValor(anuncioDTO.getValor());
+		novoAnuncio.setCategoria(categoria);
 
 		Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		novoAnuncio.setUsuario(usuarioLogado);
@@ -81,6 +92,7 @@ public class AnuncioService {
 	@Transactional
 	public Anuncio atualizar(Long id, AnuncioDTO anuncioDTO) {
 		Anuncio anuncioSave = buscarPorId(id);
+		Categoria categoria = categoriaService.buscarPorSlug(anuncioDTO.getCategoria());
 
 		if(anuncioDTO.getThumbnailId() != null && anuncioDTO.getThumbnailId() != 0) {
 			FotoAnuncio thumbnail = fotoService.buscarFotoAnuncioPorIdFoto(anuncioDTO.getThumbnailId());
@@ -96,6 +108,7 @@ public class AnuncioService {
 		anuncioSave.setDescricao(anuncioDTO.getDescricao());
 		anuncioSave.setValor(anuncioDTO.getValor());
 		anuncioSave.setStatusAnuncio(anuncioDTO.getStatusAnuncio());
+		anuncioSave.setCategoria(categoria);
 
 		return anuncioRepository.save(anuncioSave);
 	}

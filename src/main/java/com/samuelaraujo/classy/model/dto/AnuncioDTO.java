@@ -32,8 +32,18 @@ public class AnuncioDTO implements Serializable {
 
     private Long thumbnailId;
 
+    private String categoria;
+
     @Enumerated(EnumType.STRING)
     private StatusAnuncio statusAnuncio = StatusAnuncio.ABERTO;
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 
     public String getTitulo() {
         return titulo;

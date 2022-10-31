@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -50,6 +51,9 @@ public class Anuncio implements Serializable {
 
 	@OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FotoAnuncio> fotos = new ArrayList<>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Categoria categoria;
 
 	@Embedded
 	private Thumbnail thumbnail;

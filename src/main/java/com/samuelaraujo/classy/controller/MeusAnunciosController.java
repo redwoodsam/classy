@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuelaraujo.classy.model.Anuncio;
+import com.samuelaraujo.classy.model.Categoria;
 import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.AnuncioDTO;
 import com.samuelaraujo.classy.service.AnuncioService;
+import com.samuelaraujo.classy.service.CategoriaService;
 import com.samuelaraujo.classy.service.UsuarioService;
 
 @Controller
@@ -34,6 +36,9 @@ public class MeusAnunciosController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private CategoriaService categoriaService;
     
     @GetMapping
     public String meusAnuncios(Model model, Pageable pageable) {
@@ -64,6 +69,11 @@ public class MeusAnunciosController {
 	public String novoAnuncio(@ModelAttribute("anuncioDto") AnuncioDTO anuncioDto, Model model) {
 		if(!UsuarioService.isAuthenticated()) return "redirect:/login";
         if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
+
+        List<Categoria> categorias = categoriaService.listarTodas();
+
+        model.addAttribute("categorias", categorias);
+
 		return "privadas/novo-anuncio";
 	}
 
