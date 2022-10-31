@@ -1,6 +1,6 @@
 <main class="lista-anuncios-wrapper container p-3" th:fragment="lista-anuncios(anuncios)">
 	<ul th:if="${#lists.size(anuncios) == 0}" class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
-
+		<div class="container w-100">Nenhum anúncio encontrado</div>
 	</ul>
 	<ul th:if="${#lists.size(anuncios) > 0}" class="lista-anuncios m-0 p-0" th:each="anuncio : ${anuncios}">
 		<li class="m-0 p-0">

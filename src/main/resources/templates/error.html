@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="~{ base :: head }" ></head>
+	<body>
+		<header th:replace="~{ base :: header }"></header>
+		<div class="container d-flex flex-column my-2 mt-3 rounded">
+			<main class="container d-flex flex-column align-items-center w-100 h-100">
+                <div class="d-flex flex-column m-auto">
+                    <div class="mx-auto text-success fs-1"><i class="bi bi-file-earmark-excel"></i></div>
+                    <h4>Ooops... A página solicitada não existe</h4>
+                </div>
+                <br>
+                <a class="btn btn-success" th:href="@{/}">Voltar à página inicial</a>
+            </main>
+		</div>
+		<footer th:replace="~{ base :: footer }"></footer>
+	</body>
+</html>
