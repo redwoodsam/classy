@@ -1,5 +1,6 @@
 <head th:fragment="head">
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title th:text="Classy"></title>
 	<link rel="stylesheet" th:href="@{/css/normalize.css}">
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -15,32 +16,36 @@
 	<span id="logo"><a th:href="@{/}">Classy</a></span>
 </div>
 
-<header th:fragment="header" class="header navbar navbar-expand d-flex flex-column py-0 border-bottom">
-	<ul class="navbar-nav w-100 justify-content-between align-items-center align-text-center px-3 py-1">
-		<li class="nav-item">
-			<div class="d-flex align-items-center w-100">
-				<div th:replace="~{base :: logo}"></div>
-				<form class="input-group ms-4 home-caixa-pesquisa" th:action="@{/anuncios/busca}">
-					<input id="pesquisa-anuncio" type="text" class="form-control border" name="q" placeholder="Pesquisar um anúncio">
-					<button id="pesquisa-anuncio-btn" type="submit" class="btn btn-success px-4"><i class="bi bi-search"></i></button>
-				</form>
-				<div class="dropdown ms-2">
-					<button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-					  Categorias
-					</button>
-					<ul id="dropdown-categoria" class="dropdown-menu"></ul>
-				</div>
-			</div>
+<header th:fragment="header" class="px-3 navbar navbar-expand-lg navbar-light bg-light">
+	<div th:replace="~{base :: logo}"></div>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#itens-navbar" aria-controls="itens-navbar" aria-expanded="false" aria-label="Toggle navigation">
+	  <span class="navbar-toggler-icon"></span>
+	</button>
+  
+	<div class="collapse navbar-collapse w-100" id="itens-navbar">
+	  <ul class="navbar-nav d-flex justify-content-between w-100">
+		<li class="nav-item mr-auto">
+			<form class="input-group ms-4 home-caixa-pesquisa" th:action="@{/anuncios/busca}">
+				<input id="pesquisa-anuncio" type="text" class="form-control border" name="q" placeholder="Pesquisar um anúncio">
+				<button id="pesquisa-anuncio-btn" type="submit" class="btn btn-success px-4"><i class="bi bi-search"></i></button>
+			</form>
 		</li>
-		<li class="nav-item d-flex">
+		<li class="nav-item navbar-botoes-logado d-flex ms-auto">
+			<button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Categorias
+			</button>
+			<ul id="dropdown-categoria" class="dropdown-menu"></ul>
 			<a class="btn btn-outline-success" sec:authorize="!isAuthenticated()" th:href="@{/login}">Anuncie já</a>
 			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/minha-conta}">Minha conta</a>	
 			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/meus-anuncios}">Meus Anúncios</a>
 			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
 		</li>
-	</ul>
-	
+		<li class=" nav-item d-flex">
+		</li>
+	  </ul>
+	</div>
 </header>
+
 
 <div th:fragment="toast-erro(mensagem)" class="toast bg-danger" style="position: absolute; top: 0; right: 0;" role="alert" aria-live="assertive" aria-atomic="true">
 	<div class="toast-body" th:text="${mensagem}"></div>
