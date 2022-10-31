@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -63,6 +60,17 @@ public class AnuncioController {
 		
 		model.addAttribute("anuncio", anuncio);
 		return "anuncio";
+	}
+
+	@GetMapping("/categorias/{slug}")
+	public String homeCategorizada(@PathVariable String slug, Model model, Pageable pageable) {
+		
+		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
+		
+		Page<Anuncio> anuncios = anuncioService.listarTodosPorCategoria(slug, pageable);
+		model.addAttribute("anuncios", anuncios);
+		
+		return "home";
 	}
 
 	@GetMapping("busca")

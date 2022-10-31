@@ -68,7 +68,7 @@
 				let categorias = Array.from(respostaJSON).map(categoria => {
 					let li = document.createElement("li");
 					let a = document.createElement("a");
-					a.href = `${window.location.origin}/${categoria.slug}`;
+					a.href = `${window.location.origin}/anuncios/categorias/${categoria.slug}`;
 					a.className = "dropdown-item"
 					a.innerText = categoria.nome;
 					li.appendChild(a);
