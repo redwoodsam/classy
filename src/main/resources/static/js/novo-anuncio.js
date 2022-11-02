@@ -42,7 +42,7 @@ uploadInput.addEventListener("change", (e) => {
 
             // Adicionando nova imagem
             let novaImagem = document.createElement("img");
-            novaImagem.src = URL.createObjectURL(imagem);
+            novaImagem.src = window.URL.createObjectURL(imagem);
             novaImagem.className = "anuncio-imagem-thumbnail me-2";
             novaImagem.id = indice;
             
