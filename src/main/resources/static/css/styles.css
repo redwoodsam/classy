@@ -325,3 +325,126 @@ ul, li {
 .footer-social-links:hover{
 	color: var(--darker-green);
 }
+
+.linha-endereco {
+	width: 200% !important;
+}
+
+@media screen and (min-width: 769px) {
+	#form-cadastro {
+		width: 80%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#form-completar-informacoes {
+		width: 40%;
+		margin: auto;
+	}
+
+}
+
+@media screen and (max-width: 768px) {
+
+	/* Navbar */
+	.header-navbar-itens li {
+		margin-left: 0 !important;
+		margin: 0 auto !important;
+	}
+
+	.home-caixa-pesquisa {
+		margin: 0.5rem 0;
+	}
+
+	#botao-login {
+		margin-top: 0.8rem;
+	}
+
+	/* Footer */
+	.footer-items-wrapper {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#footer-social-links-wrapper {
+		position: relative;
+		right: 0;
+	}
+
+	/* Lista de anúncios */
+
+	.anuncio-wrapper-link div {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.img-thumbnail {
+		width: 15rem !important;
+		height: auto !important;
+	}
+
+	.carousel-thumbnails-wrapper {
+		width: 100%;
+	}
+
+	.carousel-thumbnails-wrapper div {
+		margin: 0 auto !important;
+		padding: 0.5rem;
+	}
+
+	.anuncio-wrapper-link div span {
+		text-align: center;
+		margin: 0.3rem 0;
+	}
+
+	/* Minha conta */
+
+	.div-endereco {
+		display: flex;
+		width: 100%;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.linha-endereco-container {
+		width: 200% !important;
+	}
+
+	.form-minha-conta-wrapper div {
+		width: 100% !important;
+	}
+
+	.form-minha-conta-campo {
+		padding: 0 !important;
+	}
+
+	/* Meus Anúncios */
+	.tabela-wrapper {
+		margin-top: 1rem !important;
+	}
+
+	.meus-anuncios-table-thumbnail {
+		width: 100% !important;
+		height: auto !important;
+	}
+
+	/* Formulários de novo Anúncio e Edição */
+	#galeria-container {
+		row-gap: 1rem;
+	}
+
+	html, body {
+		overflow-x: hidden !important;
+	}
+
+	/* Formulário de cadastro */
+	.form-cadastro-wrapper {
+		width: 90%;
+	}
+
+	/* Formulário complete suas informações */
+
+
+
+}

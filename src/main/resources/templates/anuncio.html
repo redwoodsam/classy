@@ -7,10 +7,10 @@
 		<header th:replace="~{ base :: header }"></header>
 		<main class="anuncio-completo-wrapper container m-auto row my-2 p-3">
 			<div class="row anuncio-container mx-auto container col-12 d-flex p-3">
-				<div class="col-6 d-flex flex-column anuncio-img-wrapper h-100 align-items-center">
+				<div class="col-lg-6 d-flex flex-column anuncio-img-wrapper h-100 align-items-center">
 					<div th:replace="~{fragments/anuncio/img-carousel :: img-carousel(${anuncio})}"></div>
 				</div>
-				<section class="col-4 container d-flex flex-column align-items-center py-2 px-0">
+				<section class="col-lg-4 container d-flex flex-column align-items-center py-2 px-0">
 					<div class="container d-flex flex-column align-items-center text-center w-100">
 						<div 
 							class="anuncio-detalhes-vendedor d-flex p-3 w-100 bg-success text-white align-items-center justify-content-center rounded border border-dark" 

@@ -5,19 +5,12 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.samuelaraujo.classy.exception.DadoInvalidoException;
 import com.samuelaraujo.classy.exception.NaoAutorizadoException;
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
-import com.samuelaraujo.classy.model.Anuncio;
 import com.samuelaraujo.classy.model.Foto;
 import com.samuelaraujo.classy.model.FotoAnuncio;
-import com.samuelaraujo.classy.model.Usuario;
-import com.samuelaraujo.classy.model.dto.ArquivoTemporarioDTO;
 import com.samuelaraujo.classy.repository.FotoRepository;
-import com.samuelaraujo.classy.util.ArquivoUtil;
-import com.samuelaraujo.classy.util.AutenticacaoUtil;
 
 @Service
 public class FotoService {
@@ -27,34 +20,6 @@ public class FotoService {
 
 	@Autowired
 	private UsuarioService usuarioService;
-
-	@Autowired
-	private FileSystemService fileSystemService;
-
-	@Transactional
-	public Foto uploadFotoAnuncioTemporaria(MultipartFile arquivo) {
-
-		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
-		String nomeModificado = ArquivoUtil.modificarNome(arquivo.getOriginalFilename());
-
-		Foto novaFoto = new Foto();
-		novaFoto.setFormato(arquivo.getContentType());
-		novaFoto.setNome(nomeModificado);
-		novaFoto.setPath(nomeModificado);
-		novaFoto.setUsuarioId(usuarioLogado.getId());
-
-		ArquivoTemporarioDTO arquivoTemporarioDTO = new ArquivoTemporarioDTO(usuarioLogado.getId(), nomeModificado,
-				arquivo);
-		fileSystemService.armazenarArquivo(arquivoTemporarioDTO);
-
-		try {
-			salvar(novaFoto);
-			return novaFoto;
-		} catch (RuntimeException e) {
-			fileSystemService.excluirArquivoTemporario(arquivoTemporarioDTO);
-			throw new RuntimeException("Erro ao salvar foto. Por gentileza tente novamente.");
-		}
-	}
 
 	public Foto buscarPorId(Long id) {
 		return fotoRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
@@ -67,17 +32,6 @@ public class FotoService {
 	public FotoAnuncio buscarFotoAnuncioPorIdFoto(Long idFoto) {
 		return fotoRepository.buscarFotoAnuncioPorIdFoto(idFoto)
 				.orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
-	}
-
-	@Transactional
-	public void apagar(Long id) {
-		Foto fotoSave = buscarPorId(id);
-		validaAutoria(fotoSave);
-
-		ArquivoTemporarioDTO arquivoTemporarioDTO = new ArquivoTemporarioDTO(fotoSave.getUsuarioId(), fotoSave.getNome());
-		fileSystemService.excluirArquivoTemporario(arquivoTemporarioDTO);
-
-		fotoRepository.delete(fotoSave);
 	}
 
 	@Transactional

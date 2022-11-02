@@ -9,6 +9,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+	<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> 
 	<script type="text/javascript" th:src="@{/js/scripts.js}" defer="defer"></script>
 </head>
 
@@ -18,34 +20,39 @@
 
 <header th:fragment="header" class="px-3 navbar navbar-expand-lg navbar-light bg-light">
 	<div th:replace="~{base :: logo}"></div>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#itens-navbar" aria-controls="itens-navbar" aria-expanded="false" aria-label="Toggle navigation">
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#itens-navbar" aria-controls="itens-navbar" aria-expanded="false" aria-label="Toggle navigation">
 	  <span class="navbar-toggler-icon"></span>
 	</button>
   
 	<div class="collapse navbar-collapse w-100" id="itens-navbar">
-	  <ul class="navbar-nav d-flex justify-content-between w-100">
-		<li class="nav-item mr-auto">
-			<form class="input-group ms-4 home-caixa-pesquisa" th:action="@{/anuncios/busca}">
+	  <ul class="navbar-nav header-navbar-itens d-flex justify-content-between w-100">
+		<li class="nav-item mr-auto mx-3">
+			<form class="input-group home-caixa-pesquisa" th:action="@{/anuncios/busca}">
 				<input id="pesquisa-anuncio" type="text" class="form-control border" name="q" placeholder="Pesquisar um anúncio">
 				<button id="pesquisa-anuncio-btn" type="submit" class="btn btn-success px-4"><i class="bi bi-search"></i></button>
 			</form>
 		</li>
-		<li class="nav-item navbar-botoes-logado d-flex ms-auto">
+		<li class="nav-item navbar-botoes-logado me-auto">
 			<button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Categorias
 			</button>
 			<ul id="dropdown-categoria" class="dropdown-menu"></ul>
-			<a class="btn btn-outline-success" sec:authorize="!isAuthenticated()" th:href="@{/login}">Anuncie já</a>
-			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/minha-conta}">Minha conta</a>	
-			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/meus-anuncios}">Meus Anúncios</a>
-			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
 		</li>
-		<li class=" nav-item d-flex">
+		<li>
+			<a id="botao-login" class="btn btn-outline-success" sec:authorize="!isAuthenticated()" th:href="@{/login}">Anuncie já</a>
+		</li>
+		<li>
+			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/minha-conta}">Minha conta</a>	
+		</li>
+		<li>
+			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/meus-anuncios}">Meus Anúncios</a>
+		</li>
+		<li>
+			<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
 		</li>
 	  </ul>
 	</div>
 </header>
-
 
 <div th:fragment="toast-erro(mensagem)" class="toast bg-danger" style="position: absolute; top: 0; right: 0;" role="alert" aria-live="assertive" aria-atomic="true">
 	<div class="toast-body" th:text="${mensagem}"></div>
@@ -55,10 +62,10 @@
 	<div class="toast-body" th:text="${mensagem}"></div>
 </div>
 
-<footer th:fragment="footer" class="footer d-flex container-fluid p-3 border-top justify-content-around align-items-center">
-	<div class="d-flex align-items-center w-100">
-		<p id="footer-copyright" class="m-0 mx-auto">Criado por Samuel Araújo @ 2022</p>
-		<div id="footer-social-links-wrapper">
+<footer th:fragment="footer" class="footer d-flex container-fluid p-3 border-top align-items-center w-100">
+	<div class="footer-items-wrapper d-flex align-items-center mx-auto">
+		<p id="footer-copyright" class="my-0 d-flex mx-auto">Criado por Samuel Araújo @ 2022</p>
+		<div id="footer-social-links-wrapper" class="d-flex">
 			<a class="footer-social-links" href="https://www.linkedin.com/in/arausam" target="_blank"><i class="bi bi-linkedin fs-4"></i></a>
 			<a class="footer-social-links ms-2" href="https://www.github.com/redwoodsam" target="_blank"><i class="bi bi-github fs-4"></i></a>
 		</div>

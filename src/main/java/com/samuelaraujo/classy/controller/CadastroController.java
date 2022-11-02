@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuelaraujo.classy.exception.DadoInvalidoException;
-import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.CadastroDto;
 import com.samuelaraujo.classy.service.UsuarioService;
 

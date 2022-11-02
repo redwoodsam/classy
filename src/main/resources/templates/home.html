@@ -3,7 +3,7 @@
 	<head th:replace="~{ base :: head }" ></head>
 	<body>
 		<header th:replace="~{ base :: header }"></header>
-		<div class="container-lista-anuncios container d-flex flex-column my-2 mt-3 rounded">
+		<div class="container-lista-anuncios container d-flex flex-column my-2 rounded">
 			<main th:replace="~{ fragments/home/lista-anuncios :: lista-anuncios(${anuncios}) }"></main>
 		</div>
 		<section class="d-flex w-100 p-3">
