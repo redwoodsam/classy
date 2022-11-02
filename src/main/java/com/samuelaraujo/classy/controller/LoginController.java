@@ -11,6 +11,9 @@ import com.samuelaraujo.classy.service.UsuarioService;
 @RequestMapping("/login")
 public class LoginController {
 
+    /**
+     * Direciona o usuário à página de login
+     */
 	@GetMapping
 	public String login(Model model) {
 		if(!UsuarioService.isAuthenticated()) return "login";

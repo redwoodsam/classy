@@ -15,6 +15,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.samuelaraujo.classy.service.UsuarioService;
 
+/**
+ * 
+ * Configurações de segurança e autenticação
+ * @author Samuel Araújo
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {

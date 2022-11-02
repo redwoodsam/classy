@@ -21,19 +21,23 @@ public class FotoService {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	// Busca uma foto por seu Id
 	public Foto buscarPorId(Long id) {
 		return fotoRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
 	}
 
+	// Busca uma foto por seu nome
 	public Foto buscarPorNome(String nome) {
 		return fotoRepository.buscarPorNome(nome).orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
 	}
 
+	// Busca uma entidade FotoAnuncio (relacionamento Many-to-Many) pelo Id de sua foto
 	public FotoAnuncio buscarFotoAnuncioPorIdFoto(Long idFoto) {
 		return fotoRepository.buscarFotoAnuncioPorIdFoto(idFoto)
 				.orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
 	}
 
+	// Apaga uma foto Anúncio (relacionamento Many-to-Many)
 	@Transactional
 	public void apagarFotoAnuncio(Long id) {
 		FotoAnuncio fotoAnuncio = buscarFotoAnuncioPorIdFoto(id);
@@ -41,6 +45,7 @@ public class FotoService {
 		fotoRepository.deleteById(fotoAnuncio.getFoto().getId());
 	}
 
+	// Salva uma foto
 	@Transactional
 	public Foto salvar(Foto foto) {
 		return fotoRepository.save(foto);

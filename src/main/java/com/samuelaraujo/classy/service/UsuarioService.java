@@ -45,6 +45,7 @@ public class UsuarioService implements UserDetailsService {
 		return usuarioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado"));
 	}
 
+	// Cadastra um novo usuário no sistema
 	@Transactional
 	public Usuario cadastrar(CadastroDto cadastroDto) {
 
@@ -74,12 +75,13 @@ public class UsuarioService implements UserDetailsService {
 
 	}
 
+	// Atualiza o cadastro de um usuário no sistema
 	@Transactional
 	public ContaUsuarioDTO atualizar(ContaUsuarioDTO contaUsuarioDTO) {
 		Usuario contaSalva = buscarPorId(contaUsuarioDTO.getId());
 
 		validarSenhas(contaUsuarioDTO.getSenha(), contaUsuarioDTO.getSenha2());
-		validarNomeCompleto(contaUsuarioDTO);
+		validaCamposPreenchidos(contaUsuarioDTO);
 
 		if(contaUsuarioDTO.getSenha().isEmpty()) {
 			contaUsuarioDTO.setSenha(contaSalva.getPassword());
@@ -92,7 +94,8 @@ public class UsuarioService implements UserDetailsService {
 		return new ContaUsuarioDTO(usuarioRepository.save(contaSalva));
 	}
 
-	private void validarNomeCompleto(ContaUsuarioDTO contaUsuarioDTO) {
+	// Valida os campos preenchidos no cadastro do usuário
+	private void validaCamposPreenchidos(ContaUsuarioDTO contaUsuarioDTO) {
 		if(contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco() == null) {
 			throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
 		}
@@ -109,13 +112,21 @@ public class UsuarioService implements UserDetailsService {
 			throw new DadoInvalidoException("O campo nome é obrigatório");
 		}
 	}
+	
+	// Valida se ambas as senhas enviadas pelo usuário ao cadastrar coincidem
+    private void validarSenhas(String senha, String senha2) {
+        if (!senha.equals(senha2))
+            throw new DadoInvalidoException("As senhas informadas não coincidem");
+    }
 
+	// Busca um usuário pelo seu e-mail
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return usuarioRepository.buscarPorEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Usuário ou senha incorretos"));
 	}
 
+	// Verifica se o usuário está autenticado no sistema
 	public static boolean isAuthenticated() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
@@ -124,16 +135,12 @@ public class UsuarioService implements UserDetailsService {
 		return authentication.isAuthenticated();
 	}
 
+	// Retorna informações completas do usuário logado
 	public boolean informacoesCompletas() {
 		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
 		Usuario informacoesUsuarioLogado = buscarPorId(usuarioLogado.getId());
 
 		return informacoesUsuarioLogado.getDadosPessoais().getEndereco() != null;
-	}
-
-	private void validarSenhas(String senha, String senha2) {
-		if (!senha.equals(senha2))
-			throw new DadoInvalidoException("As senhas informadas não coincidem");
 	}
 
 }

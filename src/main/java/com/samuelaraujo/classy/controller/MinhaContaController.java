@@ -30,6 +30,9 @@ public class MinhaContaController {
     @Autowired
     private UsuarioService usuarioService;
 
+    /**
+     * Direciona o usuário à página Minha Conta para atualização cadastral
+     */
     @GetMapping
     public String minhaConta(Model model) {
         if(!UsuarioService.isAuthenticated()) return "redirect:/";
@@ -43,6 +46,10 @@ public class MinhaContaController {
         return "privadas/minha-conta";
     }
 
+    /**
+     * Direciona o usuário para a página para completar o cadastro (apenas se for seu primeiro acesso
+     * após criar sua conta)
+     */
     @GetMapping("finalizar-cadastro")
     public String finalizarCadastro(Model model) {
         if(!UsuarioService.isAuthenticated()) return "redirect:/";
@@ -56,6 +63,9 @@ public class MinhaContaController {
         return "privadas/finalizar-cadastro";
     }
 
+    /**
+     * Completa o cadastro do usuário com as informações de endereço e contato
+     */
     @PostMapping("finalizar-cadastro")
     public String enviarDadosCompletos(@Valid ContaUsuarioDTO contaUsuarioDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if(!UsuarioService.isAuthenticated()) return "redirect:/";
@@ -71,6 +81,9 @@ public class MinhaContaController {
         return "redirect:/";
     }
 
+    /**
+     * Atualiza o cadastro do usuário no sistema
+     */
     @PostMapping
     public String atualizarCadastro(@Valid ContaUsuarioDTO contaUsuarioDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if(!UsuarioService.isAuthenticated()) return "redirect:/";
@@ -86,6 +99,9 @@ public class MinhaContaController {
         return "redirect:/minha-conta";
     }
 
+    /**
+     * Tratamento de erros
+     */
     @ExceptionHandler(ConstraintViolationException.class)
 	public String handleErrosValidacao(HttpServletRequest request, ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
 

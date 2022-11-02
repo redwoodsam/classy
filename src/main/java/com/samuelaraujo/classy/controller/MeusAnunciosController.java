@@ -40,6 +40,9 @@ public class MeusAnunciosController {
     @Autowired
     private CategoriaService categoriaService;
     
+    /**
+     * Direciona o usuário à página Meus Anúncios
+     */
     @GetMapping
     public String meusAnuncios(Model model, Pageable pageable) {
 
@@ -53,6 +56,9 @@ public class MeusAnunciosController {
         return "privadas/meus-anuncios";
     }
 
+    /**
+     * Pesquisa anúncios do usuário
+     */
     @GetMapping("busca")
     public String pesquisaMeusAnuncios(@RequestParam("q") String pesquisa, Model model, Pageable pageable) {
 
@@ -65,6 +71,9 @@ public class MeusAnunciosController {
         return "privadas/meus-anuncios";
     }
 
+    /**
+     * Direciona usuário à página de criação de novo anúncio
+     */
     @GetMapping("/novo")
 	public String novoAnuncio(@ModelAttribute("anuncioDto") AnuncioDTO anuncioDto, Model model) {
 		if(!UsuarioService.isAuthenticated()) return "redirect:/login";
@@ -77,6 +86,9 @@ public class MeusAnunciosController {
 		return "privadas/novo-anuncio";
 	}
 
+    /**
+     * Trata os erros de validação, retornando mensagem ao usuário
+     */
     @ExceptionHandler(ConstraintViolationException.class)
 	public String handleErrosValidacao(HttpServletRequest request, ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
 

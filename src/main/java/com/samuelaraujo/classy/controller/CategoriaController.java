@@ -18,6 +18,9 @@ public class CategoriaController {
     @Autowired
     private CategoriaService categoriaService;
     
+    /**
+     * Lista todas as categorias de anúncios
+     */
     @GetMapping
     @ResponseBody
     public List<Categoria> listar() {

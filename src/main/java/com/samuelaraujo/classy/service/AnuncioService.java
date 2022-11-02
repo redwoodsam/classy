@@ -45,31 +45,38 @@ public class AnuncioService {
 	@Autowired
 	private FileSystemService fileSystemService;
 	
+	// Lista todos os anúncios - usado na Home Page (retorno paginado)
 	public Page<Anuncio> listarTodos(Pageable pageable) {
 		return anuncioRepository.findAll(pageable);
 	}
 
+	// Busca anúncios por Id
+	public Anuncio buscarPorId(Long id) {
+	    return anuncioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Anúncio não encontrado"));
+	}
+	
+	// Lista anúncios por categoria (retorno paginado)
 	public Page<Anuncio> listarTodosPorCategoria(String slugCategoria, Pageable pageable) {
 		return anuncioRepository.listarPorCategoria(slugCategoria, pageable);
 	}
-	
-	public Anuncio buscarPorId(Long id) {
-		return anuncioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Anúncio não encontrado"));
-	}
 
+	// Realiza a busca de um anúncio de um determinado usuário recebendo parâmetro do usuário (retorno paginado)
 	public Page<Anuncio> buscaAnuncioUsuario(String busca, Pageable pageable) {
 		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
 		return anuncioRepository.buscaAnuncioUsuario(usuarioLogado.getDadosPessoais().getEmail(), busca, pageable);
 	}
 
+	// Realiza a busca de um anúncio recebendo parâmetro do usuário (retorno paginado)
 	public Page<Anuncio> buscaAnuncio(String busca, Pageable pageable) {
 		return anuncioRepository.buscaAnuncio(busca, pageable);
 	}
 
+	// Lista todos os anúncios de um usuário (retorno paginado)
 	public Page<Anuncio> listarPorEmailUsuario(String email, Pageable pageable) {
 		return anuncioRepository.listarPorEmailUsuario(email, pageable);
 	}
 
+	// Salva um novo anúncio
 	@Transactional
 	public AnuncioRespostaDTO salvar(AnuncioDTO anuncioDTO) {
 
@@ -88,6 +95,7 @@ public class AnuncioService {
 		return new AnuncioRespostaDTO(anuncioRepository.save(novoAnuncio));
 	}
 
+	// Atualiza o anúncio
 	@Transactional
 	public Anuncio atualizar(Long id, AnuncioDTO anuncioDTO) {
 		Anuncio anuncioSave = buscarPorId(id);
@@ -229,6 +237,8 @@ public class AnuncioService {
 
 	}
 
+	// Função utilitária utilizada apenas na resetaThumbnail, responsável por definir qual será a próxima
+	// thumbnail, caso a atual seja apagada
 	private int obterIndiceSeguinte(int indiceAtual, List<?> lista) {
 		int tamanho = lista.size();
 		int proximoIndice = indiceAtual + 1;

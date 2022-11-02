@@ -53,6 +53,11 @@ public class AnuncioController {
 	@Autowired
 	private CategoriaService categoriaService;
 
+	/**
+	 * Direciona o usuário para a view completa de um anúncio
+	 * @param id do anúncio
+	 * @return view anunio
+	 */
 	@GetMapping("/{id}")
 	public String anuncio(@PathVariable Long id, Model model) {
 		if(UsuarioService.isAuthenticated() && !usuarioService.informacoesCompletas()) return "redirect:/minha-conta/finalizar-cadastro";
@@ -62,6 +67,10 @@ public class AnuncioController {
 		return "anuncio";
 	}
 
+	/**
+     * Direciona o usuário para a view de lista de anúncios de uma determinada categoria
+     * @param id do anúncio
+     */
 	@GetMapping("/categorias/{slug}")
 	public String homeCategorizada(@PathVariable String slug, Model model, Pageable pageable) {
 		
@@ -73,6 +82,11 @@ public class AnuncioController {
 		return "home";
 	}
 
+	/**
+	 * Realiza a busca de anúncios a partir de uma entrada do usuário
+	 * @param Parâmetro de busca do usuário
+	 * @return view home com anúncios encontrados pela busca
+	 */
 	@GetMapping("busca")
     public String pesquisaAnuncios(@RequestParam("q") String pesquisa, Model model, Pageable pageable) {
 
@@ -84,6 +98,10 @@ public class AnuncioController {
         return "home";
     }
 
+	/**
+	 * Cria um novo anúncio 
+	 * @param anuncioDTO
+	 */
 	@PostMapping
 	public ResponseEntity<?> cadastrar(@Valid AnuncioDTO anuncioDTO, BindingResult result) {
 		try {
@@ -100,6 +118,10 @@ public class AnuncioController {
 		}
 	}
 
+	/**
+	 * Direciona o usuário para a tela de edição de um determinado anúncio
+	 * @param Id do anúncio
+	 */
 	@GetMapping("/{id}/edit")
 	public String anuncioEdit(@PathVariable Long id, Model model) {
 		
@@ -108,13 +130,15 @@ public class AnuncioController {
 		Anuncio anuncioSave = anuncioService.buscarPorId(id);
 		List<Categoria> categorias = categoriaService.listarTodas();
 
-		categorias.forEach(c -> System.out.println(c.getNome()));
-
 		model.addAttribute("anuncio", anuncioSave);
 		model.addAttribute("categorias", categorias);
 		return "privadas/editar-anuncio";
 	}
 
+	/**
+	 * Realiza a atualização de um determinado anúncio
+	 * @param Id do anúncio
+	 */
 	@PostMapping("/{id}/edit")
 	public String atualizarAnuncio(@PathVariable Long id, @Valid AnuncioDTO anuncioDto, BindingResult result, RedirectAttributes redirectAttributes) {
 		
@@ -129,6 +153,11 @@ public class AnuncioController {
 		return "redirect:/meus-anuncios";
 	}
 
+	/**
+	 * Realiza o upload de uma imagem e a amarra a um anúncio
+	 * @param Id do anúncio
+	 * @param Arquivo de imagem
+	 */
 	@PostMapping("/{id}/upload")
 	public ResponseEntity<Foto> uploadImagem(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
 		
@@ -139,14 +168,23 @@ public class AnuncioController {
 			.body(foto);
 	}
 
+	/**
+	 * Seta uma nova thumbnail para um determinado anúncio
+	 * @param Id do anúncio
+	 * @param thumbnail
+	 */
 	@PostMapping("/{id}/thumbnail")
 	public ResponseEntity<?> atualizaThumbnail(@PathVariable Long id, @Valid EnvioThumbnailDTO thumbnail) {
-		
 		anuncioService.setarThumbnail(id, thumbnail.getThumbnailId());
-
 		return ResponseEntity.noContent().build();
 	}
 
+	
+	/**
+	 * Exclui uma determinada imagem de um anúncio
+	 * @param Id do anúncio
+	 * @param Id da foto a apagar
+	 */
 	@DeleteMapping("/{idAnuncio}/fotos/{idFoto}")
 	public ResponseEntity<?> apagarImagem(@PathVariable Long idAnuncio, @PathVariable Long idFoto) {
 		
@@ -157,6 +195,10 @@ public class AnuncioController {
 			.build();
 	}
 
+	/**
+	 * Apaga um anúncio
+	 * @param Id do anúncio
+	 */
 	@DeleteMapping("/{idAnuncio}")
 	public ResponseEntity<?> apagarAnuncio(@PathVariable Long idAnuncio) {
 		
@@ -167,6 +209,11 @@ public class AnuncioController {
 			.build();
 	}
 
+	/**
+	 * Realiza o download de uma foto do anúncio
+	 * @param Id do anúncio
+	 * @param Nome da foto
+	 */
 	@GetMapping("/{idAnuncio}/{nomeFoto}")
 	public ResponseEntity<Resource> downloadImagem(@PathVariable Long idAnuncio, @PathVariable String nomeFoto) {
 		FileResponseDTO foto = anuncioService.obterFoto(idAnuncio, nomeFoto.toString());
@@ -178,6 +225,9 @@ public class AnuncioController {
 			.body(foto.getResource());
 	}
 
+	/**
+	 * Trata os erros de campos faltando e retorna as mensagens ao usuário
+	 */
 	@ExceptionHandler(ConstraintViolationException.class)
 	public String handleErrosValidacao(HttpServletRequest request, ConstraintViolationException ex, RedirectAttributes redirectAttributes) {
 

@@ -13,7 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.samuelaraujo.classy.exception.NaoAutorizadoException;
 import com.samuelaraujo.classy.exception.NaoEncontradoException;
-
+/**
+ * 
+ * Classe responsável por tratar todos os erros genéricos que possam ocorrer na aplicação
+ * @author Samuel Araújo
+ *
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

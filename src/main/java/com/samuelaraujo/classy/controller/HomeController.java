@@ -23,6 +23,9 @@ public class HomeController {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	/**
+	 * Direciona o usuário à página inicial do sistema
+	 */
 	@GetMapping
 	public String home(Model model, Pageable pageable) {
 		

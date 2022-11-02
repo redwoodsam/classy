@@ -28,6 +28,9 @@ public class CadastroController {
 		return "cadastro";
 	}
 	
+	/**
+	 * Cadastra um novo usuário no sistema
+	 */
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String cadastrar(@Valid CadastroDto cadastroDto, BindingResult result, RedirectAttributes redirectAttributes) {
 		try {

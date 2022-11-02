@@ -19,6 +19,7 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
+    // Busca a categoria pelo nome de URL (slug)
     public Categoria buscarPorSlug(String slug) {
         return categoriaRepository.buscarPorSlug(slug).orElseThrow(() -> new NaoEncontradoException("Categoria não encontrada"));
     }
