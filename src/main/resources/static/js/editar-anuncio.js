@@ -5,14 +5,10 @@ const uploadInputWrapper = document.getElementById("upload-wrapper");
 const uploadInput = document.getElementById("editar-anuncio-upload-input");
 const thumbnailContainers = Array.from(document.getElementsByClassName('anuncio-imagem-thumbnail-wrapper'));
 const thumbnailInput = document.getElementById("editar-anuncio-thumbnail");
-const visualizacaoImagem = document.getElementById("img-principal");
-const valorInput = document.getElementById("valor-input");
 
 const ID_ANUNCIO = window.location.pathname.split("/")[2];
 const UPLOAD_URL = `upload/`;
 const FOTO_URL = `fotos/`
-
-let thumbnailEscolhida = null;
 
 // Configura a funcionalidade do botão de apagar imagem
 botoesApagar.map(botao => {
@@ -62,6 +58,7 @@ thumbnailContainers.map(container => {
 // Configura a seleção da imagem principal.
 anuncioThumbnails.map(thumb => {
     thumb.addEventListener("click", (e) => {
+        let anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
         const imagemClicada = anuncioThumbnails.filter(thumb => e.target.id === thumb.id)[0];
         anuncioThumbnails.forEach(thumb => {
             if(thumb.classList.contains("anuncio-imagem-ativa")) {
@@ -128,6 +125,8 @@ uploadInput.addEventListener("change", async (e) => {
         });
     
         novaImagem.addEventListener("click", (e) => {
+            let anuncioThumbnails = Array.from(document.getElementsByClassName("anuncio-imagem-thumbnail"));
+            let thumbnailInput = document.getElementById("editar-anuncio-thumbnail")
             anuncioThumbnails.forEach(thumb => {
                 if(thumb.classList.contains("anuncio-imagem-ativa")) {
                     thumb.classList.remove("anuncio-imagem-ativa");
@@ -150,14 +149,15 @@ uploadInput.addEventListener("change", async (e) => {
             
             deleteData(`${FOTO_URL}${id}`)
             .then(async response => {
-                if(response.status !== 204) {
-                    console.log("Erro ao apagar foto - ", await response.json())
-                } else {
-                    thumbnail.removeEventListener("mouseenter", () => {}, true);
-                    thumbnail.removeEventListener("mouseleave", () => {}, true);
-                    galeriaContainer.removeChild(novaImagemWrapper);
-                }
+                galeriaContainer.removeChild(novaImagemWrapper);
+                    novaImagemWrapper.removeEventListener("mouseenter", () => {}, true);
+                    novaImagemWrapper.removeEventListener("mouseleave", () => {}, true);
             })
+            .catch(async erro => {
+                mostrarToast("Erro ao apagar foto - ", await erro.text)
+            });
+
+            e.preventDefault();
         });
         
     }

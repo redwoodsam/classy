@@ -398,6 +398,12 @@ ul, li {
 		margin: 0.3rem 0;
 	}
 
+	/* Página do anúncio */
+	.carousel-active-image {
+		max-height: 100%;
+		max-width: 100%;
+	}
+
 	/* Minha conta */
 
 	.div-endereco {
@@ -443,8 +449,11 @@ ul, li {
 		width: 90%;
 	}
 
-	/* Formulário complete suas informações */
-
+	@media screen and (width: 768px) {
+		.carousel-thumbnails-wrapper div {
+			margin: 0 !important;
+		}
+	}
 
 
 }

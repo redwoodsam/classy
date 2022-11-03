@@ -82,15 +82,22 @@
                         >
                     </div>
                 </div>
+                <input 
+                    type="hidden"
+                    id="editar-anuncio-thumbnail"
+                    name="thumbnailId" 
+                    style="position: absolute;" 
+                    th:if="${#lists.size(anuncio.fotos) == 0}"
+                >
+                <input 
+                    type="hidden"
+                    id="editar-anuncio-thumbnail"
+                    name="thumbnailId" 
+                    style="position: absolute;" 
+                    th:if="${#lists.size(anuncio.fotos) > 0}"
+                    th:value="${anuncio.thumbnail != null ? anuncio.thumbnail.thumbnailId : anuncio.fotos[0].foto.id}"
+                >
             </section>
-            <input 
-                type="hidden" 
-                id="editar-anuncio-thumbnail" 
-                name="thumbnailId" 
-                style="position: absolute; visibility: hidden;" 
-                th:if="${#lists.size(anuncio.fotos) > 0}"
-                th:value="${anuncio.thumbnail != null ? anuncio.thumbnail.thumbnailId : anuncio.fotos[0].foto.id}"
-            >
             <button type="submit" class="btn btn-success">Salvar</button>
         </form>
     </main>
