@@ -182,7 +182,7 @@ formulario.addEventListener("submit", async (e) => {
                 }
             } else {
                 let divSucesso = criarMensagemDeSucesso();
-                telaCarregamento.remove(spinner);
+                telaCarregamento.removeChild(spinner);
                 telaCarregamento.appendChild(divSucesso);
     
                 setTimeout(() => {
