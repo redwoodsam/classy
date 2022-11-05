@@ -10,6 +10,11 @@ Versão demo: https://classy-ads.herokuapp.com/
 <hr>
 <strong>Cuidado! Não erre a senha mais de 5 vezes ou seu IP será bloqueado por 24 horas</strong>
 <hr>
+
+<hr>
+<strong>Todos os anúncios e fotos são apagados automaticamente após 24 horas</strong>
+<hr>
+
 Tecnologias utilizadas:
 
 - Java 8
