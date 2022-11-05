@@ -25,12 +25,18 @@
                                 type="text" 
                                 th:field="*{endereco}" 
                                 placeholder="Ex: Rua das Palmeiras"
-                                onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))"
                             >
                         </div>
                         <div class="form-minha-conta-campo form-group col-lg-3">
                             <label for="numero">Número:</label>
-                            <input class="form-control" type="text" th:field="*{numero}" placeholder="Nº">
+                            <input 
+                            	class="form-control" 
+                            	type="text" 
+                            	th:field="*{numero}" 
+                            	placeholder="Nº"
+                            	onkeypress="return (event.charCode != 8 && event.charCode == 0 || event.charCode == 44 || (event.charCode >= 48 && event.charCode <= 57))"
+                            >
+                            
                         </div>
                     </div>
                     <div class="linha-endereco container row" style="padding: 0;">

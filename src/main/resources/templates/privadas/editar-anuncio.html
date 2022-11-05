@@ -23,6 +23,7 @@
                             th:each="categoria : ${categorias}" 
                             th:value="${categoria.slug}" 
                             th:text="${categoria.nome}"
+                            th:selected="${anuncio.categoria.slug eq categoria.slug}"
                         ></option>
                     </select>
                 </div>
