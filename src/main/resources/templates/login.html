@@ -8,7 +8,8 @@
 		<div th:if="${mensagem}" th:text="${mensagem}" class="mensagem-confirmacao border border-dark d-flex mx-auto bg-success p-2 px-4 m-3 rounded text-white"></div>
 		<div class="form-wrapper d-flex flex-column border border-dark rounded p-4 my-3 text-center">
 			<h3>Entre com sua conta</h3>
-			<div th:if="${param.error}" style="color:red">Login ou senha incorretos.</div>
+			<div th:if="${erro != null}" style="color:red" th:text="${erro}"></div>
+			<div th:if="${param.error != null && erro == null}" style="color:red">Login ou senha incorretos.</div>
 			<form id="form-login" th:action="@{/login}" method="post">
 				<div class="form-campo form-group">
 					<label for="login">E-mail:</label>

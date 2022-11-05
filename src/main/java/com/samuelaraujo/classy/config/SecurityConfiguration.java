@@ -11,15 +11,15 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.samuelaraujo.classy.service.UsuarioService;
+import com.samuelaraujo.classy.service.security.AcessoIpFilter;
+import com.samuelaraujo.classy.service.security.LoginAttemptService;
 
 /**
- * 
  * Configurações de segurança e autenticação
- * @author Samuel Araújo
- *
  */
 @Configuration
 @EnableWebSecurity
@@ -27,7 +27,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
+	@Autowired
+	private LoginAttemptService loginAttemptService;
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
@@ -39,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.csrf().disable()
+			.addFilterBefore(new AcessoIpFilter(loginAttemptService), UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests()
 			.antMatchers(HttpMethod.GET, "/", "/anuncios/**", "/categorias/**").permitAll()
 			.antMatchers("/login", "/cadastro").permitAll()
@@ -73,5 +77,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 }

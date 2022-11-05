@@ -21,16 +21,19 @@ public class FotoService {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Transactional
 	// Busca uma foto por seu Id
 	public Foto buscarPorId(Long id) {
 		return fotoRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
 	}
 
+	@Transactional
 	// Busca uma foto por seu nome
 	public Foto buscarPorNome(String nome) {
 		return fotoRepository.buscarPorNome(nome).orElseThrow(() -> new NaoEncontradoException("Foto não encontrada"));
 	}
 
+	@Transactional
 	// Busca uma entidade FotoAnuncio (relacionamento Many-to-Many) pelo Id de sua foto
 	public FotoAnuncio buscarFotoAnuncioPorIdFoto(Long idFoto) {
 		return fotoRepository.buscarFotoAnuncioPorIdFoto(idFoto)
@@ -45,12 +48,18 @@ public class FotoService {
 		fotoRepository.deleteById(fotoAnuncio.getFoto().getId());
 	}
 
+	@Transactional
+	public void apagarTudo() {
+		fotoRepository.deleteAll();
+	}
+
 	// Salva uma foto
 	@Transactional
 	public Foto salvar(Foto foto) {
 		return fotoRepository.save(foto);
 	}
 
+	@Transactional
 	// Verifica se o usuário autenticado é o dono da foto
 	public void validaAutoria(Foto foto) {
 		String emailAnuncio = usuarioService.buscarPorId(foto.getUsuarioId()).getDadosPessoais().getEmail();

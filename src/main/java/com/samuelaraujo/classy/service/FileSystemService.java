@@ -31,6 +31,12 @@ public class FileSystemService {
 		Path pathArquivos = Paths.get(diretorioArquivos);
 		Path pathUsuario = Paths.get(arquivoDTO.getUsuarioId());
 		Path pathAnuncio = Paths.get(arquivoDTO.getAnuncioId());
+		
+		File pathArquivosFile = pathArquivos.toFile(); 
+		
+		if(!pathArquivosFile.exists()) {
+		    pathArquivosFile.mkdir();
+		}
 
 		File pastaUsuario = new File(pathArquivos.resolve(pathUsuario).toString());
 		File pastaAnuncio = new File(pathArquivos.resolve(pathUsuario).resolve(pathAnuncio).toString());
@@ -111,6 +117,21 @@ public class FileSystemService {
 		}
 	}
 
+	// Apaga todos os arquivos físicos
+	public void apagarTudo() {
+		Path pathArquivos = Paths.get(diretorioArquivos);
+
+		File[] arquivos = pathArquivos.toFile().listFiles();
+
+		try {
+			// Apaga todos os arquivos
+			for(int i = 0; i < arquivos.length; i++) {
+				FileUtils.forceDelete(arquivos[i]);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Erro ao apagar pastas: %s", e.getMessage()));
+		}
+	}
 
 	// Apaga o arquivo físico no servidor
 	public void excluirFotoAnuncio(ArquivoDTO arquivoDTO) {

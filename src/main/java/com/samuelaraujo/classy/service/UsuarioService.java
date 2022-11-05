@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -25,122 +26,131 @@ import com.samuelaraujo.classy.model.Usuario;
 import com.samuelaraujo.classy.model.dto.CadastroDto;
 import com.samuelaraujo.classy.model.dto.ContaUsuarioDTO;
 import com.samuelaraujo.classy.repository.UsuarioRepository;
+import com.samuelaraujo.classy.service.security.LoginAttemptService;
 import com.samuelaraujo.classy.util.AutenticacaoUtil;
 
 @Service
 public class UsuarioService implements UserDetailsService {
 
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-	@Lazy
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    @Lazy
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-	public List<Usuario> listarTodos() {
-		return usuarioRepository.findAll();
-	}
+    @Autowired
+    private HttpServletRequest request;
 
-	public Usuario buscarPorId(Long id) {
-		return usuarioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado"));
-	}
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
-	// Cadastra um novo usuário no sistema
-	@Transactional
-	public Usuario cadastrar(CadastroDto cadastroDto) {
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
+    }
 
-		Optional<Usuario> usuarioSave = usuarioRepository.buscarPorEmail(cadastroDto.getEmail());
-		if(usuarioSave.isPresent()) {
-			throw new DadoInvalidoException("O e-mail informado já existe, por favor tente outro.");
-		}
-		
-		Usuario usuario = new Usuario();
+    @Transactional
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id).orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado"));
+    }
 
-		List<String> nomes = Arrays.asList(cadastroDto.getNomeCompleto().split(" "));
-		String sobrenome = String.join(" ", nomes.subList(1, (nomes.size())));
+    // Cadastra um novo usuário no sistema
+    @Transactional
+    public Usuario cadastrar(CadastroDto cadastroDto) {
 
-		DadosPessoais dadosPessoais = new DadosPessoais();
-		dadosPessoais.setEmail(cadastroDto.getEmail());
-		dadosPessoais.setNome(nomes.get(0));
-		dadosPessoais.setSobrenome(sobrenome);
+        Optional<Usuario> usuarioSave = usuarioRepository.buscarPorEmail(cadastroDto.getEmail());
+        if (usuarioSave.isPresent()) {
+            throw new DadoInvalidoException("O e-mail informado já existe, por favor tente outro.");
+        }
 
-		String senha = cadastroDto.getSenha();
+        Usuario usuario = new Usuario();
 
-		validarSenhas(senha, cadastroDto.getSenha2());
+        List<String> nomes = Arrays.asList(cadastroDto.getNomeCompleto().split(" "));
+        String sobrenome = String.join(" ", nomes.subList(1, (nomes.size())));
 
-		usuario.setDadosPessoais(dadosPessoais);
-		usuario.setPassword(passwordEncoder.encode(senha));
+        DadosPessoais dadosPessoais = new DadosPessoais();
+        dadosPessoais.setEmail(cadastroDto.getEmail());
+        dadosPessoais.setNome(nomes.get(0));
+        dadosPessoais.setSobrenome(sobrenome);
 
-		return usuarioRepository.save(usuario);
+        String senha = cadastroDto.getSenha();
 
-	}
+        validarSenhas(senha, cadastroDto.getSenha2());
 
-	// Atualiza o cadastro de um usuário no sistema
-	@Transactional
-	public ContaUsuarioDTO atualizar(ContaUsuarioDTO contaUsuarioDTO) {
-		Usuario contaSalva = buscarPorId(contaUsuarioDTO.getId());
+        usuario.setDadosPessoais(dadosPessoais);
+        usuario.setPassword(passwordEncoder.encode(senha));
 
-		validarSenhas(contaUsuarioDTO.getSenha(), contaUsuarioDTO.getSenha2());
-		validaCamposPreenchidos(contaUsuarioDTO);
+        return usuarioRepository.save(usuario);
 
-		if(contaUsuarioDTO.getSenha().isEmpty()) {
-			contaUsuarioDTO.setSenha(contaSalva.getPassword());
-		} else {
-			contaUsuarioDTO.setSenha(passwordEncoder.encode(contaUsuarioDTO.getSenha()));
-		}
-		
-		BeanUtils.copyProperties(contaUsuarioDTO.obterUsuario(), contaSalva, "id", "authorities", "anuncios", "email");
+    }
 
-		return new ContaUsuarioDTO(usuarioRepository.save(contaSalva));
-	}
+    // Atualiza o cadastro de um usuário no sistema
+    @Transactional
+    public ContaUsuarioDTO atualizar(ContaUsuarioDTO contaUsuarioDTO) {
+        Usuario contaSalva = buscarPorId(contaUsuarioDTO.getId());
 
-	// Valida os campos preenchidos no cadastro do usuário
-	private void validaCamposPreenchidos(ContaUsuarioDTO contaUsuarioDTO) {
-		if(contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco() == null) {
-			throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
-		}
+        validarSenhas(contaUsuarioDTO.getSenha(), contaUsuarioDTO.getSenha2());
+        validaCamposPreenchidos(contaUsuarioDTO);
 
-		if(
-			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getEndereco().isEmpty() ||
-			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getBairro().isEmpty() ||
-			contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getCidade().isEmpty()
-		) {
-			throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
-		}
+        if (contaUsuarioDTO.getSenha().isEmpty()) {
+            contaUsuarioDTO.setSenha(contaSalva.getPassword());
+        } else {
+            contaSalva.setPassword(passwordEncoder.encode(contaSalva.getPassword()));
+            contaUsuarioDTO.setSenha(passwordEncoder.encode(contaUsuarioDTO.getSenha()));
+        }
+        
+        contaSalva.setPassword(contaUsuarioDTO.getSenha());
 
-		if(contaUsuarioDTO.getNomeCompleto().trim().isEmpty()) {
-			throw new DadoInvalidoException("O campo nome é obrigatório");
-		}
-	}
-	
-	// Valida se ambas as senhas enviadas pelo usuário ao cadastrar coincidem
+        BeanUtils.copyProperties(contaUsuarioDTO.obterUsuario(), contaSalva, "id", "authorities", "anuncios", "email");
+
+        return new ContaUsuarioDTO(usuarioRepository.save(contaSalva));
+    }
+
+    // Busca um usuário pelo seu e-mail
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usuarioRepository.buscarPorEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário ou senha incorretos"));
+    }
+
+    // Valida os campos preenchidos no cadastro do usuário
+    private void validaCamposPreenchidos(ContaUsuarioDTO contaUsuarioDTO) {
+        if (contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco() == null) {
+            throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
+        }
+
+        if (contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getEndereco().isEmpty() ||
+                contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getBairro().isEmpty() ||
+                contaUsuarioDTO.obterUsuario().getDadosPessoais().getEndereco().getCidade().isEmpty()) {
+            throw new DadoInvalidoException("Os campos de endereço são obrigatórios");
+        }
+
+        if (contaUsuarioDTO.getNomeCompleto().trim().isEmpty()) {
+            throw new DadoInvalidoException("O campo nome é obrigatório");
+        }
+    }
+
+    // Valida se ambas as senhas enviadas pelo usuário ao cadastrar coincidem
     private void validarSenhas(String senha, String senha2) {
         if (!senha.equals(senha2))
             throw new DadoInvalidoException("As senhas informadas não coincidem");
     }
 
-	// Busca um usuário pelo seu e-mail
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return usuarioRepository.buscarPorEmail(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário ou senha incorretos"));
-	}
+    // Verifica se o usuário está autenticado no sistema
+    public static boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
+            return false;
+        }
+        return authentication.isAuthenticated();
+    }
 
-	// Verifica se o usuário está autenticado no sistema
-	public static boolean isAuthenticated() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
-			return false;
-		}
-		return authentication.isAuthenticated();
-	}
+    // Retorna informações completas do usuário logado
+    public boolean informacoesCompletas() {
+        Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
+        Usuario informacoesUsuarioLogado = buscarPorId(usuarioLogado.getId());
 
-	// Retorna informações completas do usuário logado
-	public boolean informacoesCompletas() {
-		Usuario usuarioLogado = AutenticacaoUtil.obterUsuarioLogado();
-		Usuario informacoesUsuarioLogado = buscarPorId(usuarioLogado.getId());
-
-		return informacoesUsuarioLogado.getDadosPessoais().getEndereco() != null;
-	}
+        return informacoesUsuarioLogado.getDadosPessoais().getEndereco() != null;
+    }
 
 }
